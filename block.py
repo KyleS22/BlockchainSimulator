@@ -20,22 +20,28 @@ class BlockBuilder:
 
 class Block:
 
-    GENESIS_DIFFICULTY = 25
-    GENESIS_TIMESTAMP = 1518758927.32
-    GENESIS_NONCE = 16702160
+    GENESIS_DIFFICULTY = 15
+    GENESIS_TIMESTAMP = 1518764469.288878
+    GENESIS_NONCE = 0
 
     def get_difficulty(self):
         return self.header.difficulty
 
+    def get_timestamp(self):
+        return self.header.timestamp
+
+    def get_challenge(self):
+        return 1 << self.header.difficulty
+    
     @classmethod
     def genesis(cls):
-        return cls(b'', cls.GENESIS_DIFFICULTY, b'', 0, cls.GENESIS_TIMESTAMP, cls.GENESIS_NONCE)
+        return cls(b'', cls.GENESIS_DIFFICULTY, b'', cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
 
     @classmethod
     def block(cls, prev_hash, difficulty, body):
-        return cls(prev_hash, difficulty, body)
+        return cls(prev_hash, difficulty, body, time.time())
 
-    def __init__(self, prev_hash, difficulty, body, entropy=randbits(32), timestamp=time.time(), nonce=0):
+    def __init__(self, prev_hash, difficulty, body, timestamp, entropy=randbits(32), nonce=0):
 
         self.nonce = nonce
         self.prev_hash = prev_hash

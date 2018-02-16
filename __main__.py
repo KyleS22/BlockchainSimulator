@@ -1,15 +1,11 @@
 import sys
-from block import BlockBuilder, Block
+from node import Node
 
 
 def run_project(args):
 
-    cur = Block.genesis()
-    while True:
-
-        while not cur.is_valid():
-            cur.next()
-        cur = BlockBuilder(cur.hash(), cur.get_difficulty()).build()
+    node = Node()
+    node.mine()
 
 
 if __name__ == '__main__':

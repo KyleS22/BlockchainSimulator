@@ -7,8 +7,8 @@ class Miner:
 
     DIFFICULTY_TARGET = 10.0
 
-    pending_data_lock = threading.Lock()
-    pending_data = set()
+    pending_blobs_lock = threading.Lock()
+    pending_blobs = set()
 
     chain = []
 
@@ -28,9 +28,9 @@ class Miner:
 
             cur = self.__next_block()
 
-    def add_data(self, data):
-        with self.pending_data_lock:
-            self.pending_data.add(data)
+    def add(self, msg):
+        with self.pending_blobs_lock:
+            self.pending_blobs.add(msg)
 
     def __next_block(self):
 

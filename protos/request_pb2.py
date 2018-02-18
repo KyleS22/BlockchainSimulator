@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x44\x61taMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0c\n\x04\x64\x61ta\x18\x02 \x01(\x0c*\x17\n\x0bRequestType\x12\x08\n\x04\x44\x41TA\x10\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c*\x17\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x62\x06proto3')
 )
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
@@ -30,7 +30,7 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='DATA', index=0, number=0,
+      name='BLOB', index=0, number=0,
       options=None,
       type=None),
   ],
@@ -42,7 +42,7 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPE)
 
 RequestType = enum_type_wrapper.EnumTypeWrapper(_REQUESTTYPE)
-DATA = 0
+BLOB = 0
 
 
 
@@ -84,22 +84,22 @@ _REQUEST = _descriptor.Descriptor(
 )
 
 
-_DATAMESSAGE = _descriptor.Descriptor(
-  name='DataMessage',
-  full_name='DataMessage',
+_BLOBMESSAGE = _descriptor.Descriptor(
+  name='BlobMessage',
+  full_name='BlobMessage',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='DataMessage.timestamp', index=0,
+      name='timestamp', full_name='BlobMessage.timestamp', index=0,
       number=1, type=2, cpp_type=6, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='data', full_name='DataMessage.data', index=1,
+      name='blob', full_name='BlobMessage.blob', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
@@ -123,7 +123,7 @@ _DATAMESSAGE = _descriptor.Descriptor(
 
 _REQUEST.fields_by_name['request_type'].enum_type = _REQUESTTYPE
 DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
-DESCRIPTOR.message_types_by_name['DataMessage'] = _DATAMESSAGE
+DESCRIPTOR.message_types_by_name['BlobMessage'] = _BLOBMESSAGE
 DESCRIPTOR.enum_types_by_name['RequestType'] = _REQUESTTYPE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -134,12 +134,12 @@ Request = _reflection.GeneratedProtocolMessageType('Request', (_message.Message,
   ))
 _sym_db.RegisterMessage(Request)
 
-DataMessage = _reflection.GeneratedProtocolMessageType('DataMessage', (_message.Message,), dict(
-  DESCRIPTOR = _DATAMESSAGE,
+BlobMessage = _reflection.GeneratedProtocolMessageType('BlobMessage', (_message.Message,), dict(
+  DESCRIPTOR = _BLOBMESSAGE,
   __module__ = 'request_pb2'
-  # @@protoc_insertion_point(class_scope:DataMessage)
+  # @@protoc_insertion_point(class_scope:BlobMessage)
   ))
-_sym_db.RegisterMessage(DataMessage)
+_sym_db.RegisterMessage(BlobMessage)
 
 
 # @@protoc_insertion_point(module_scope)

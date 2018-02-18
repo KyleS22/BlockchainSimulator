@@ -30,6 +30,8 @@ class Miner:
         self.chain = []
         self.chain_lock = threading.Lock()
 
+        self.mine_event = []
+
         genesis = Block.genesis()
         self.chain.append(genesis)
 
@@ -81,6 +83,7 @@ class Miner:
         body from the pending blobs set and adding them to the mined blobs dictionary.
         :param block: The block to be added.
         """
+
         debug_msg = "Add block to chain with nonce: %d blobs:" % block.get_nonce()
         util.log_collection(logging.DEBUG, debug_msg, block.get_body().blobs)
 
@@ -92,6 +95,9 @@ class Miner:
             self.mined_blobs[hash(msg.blob)].add((block_num, idx))
 
         self.chain.append(block)
+
+        for handler in self.mine_event:
+            handler(block)
 
         with self.pending_blobs_lock:
             self.pending_blobs.difference_update(block.get_body().blobs)

@@ -75,10 +75,14 @@ class Node:
         Initialize the servers and miner required for a peer to peer node to operate.
         """
         self.miner = Miner()
+        self.miner.mine_event.append(self.block_mined)
 
         self.request_server = server.TCPServer(10000, RequestServer)
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
+
+    def block_mined(self, block):
+        pass
 
     def run(self):
         """

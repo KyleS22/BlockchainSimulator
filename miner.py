@@ -1,4 +1,6 @@
 from block import Block, BlockBuilder
+from protos import request_pb2
+from collections import defaultdict
 import math
 import time
 import threading
@@ -15,7 +17,11 @@ class Miner:
         self.pending_blobs_lock = threading.Lock()
         self.pending_blobs = set()
 
+        self.mined_blobs = defaultdict(set)
+
         self.chain = []
+        self.chain_lock = threading.Lock()
+
         genesis = Block.genesis()
         self.chain.append(genesis)
 
@@ -27,8 +33,9 @@ class Miner:
                 cur.next()
 
             # TODO Add interrupt to stop mining and move to the next block if a block is received from another node
-            self.__add_block(cur)
-            cur = self.__next_block()
+            with self.chain_lock:
+                self.__add_block(cur)
+                cur = self.__next_block()
 
     def add(self, msg):
         with self.pending_blobs_lock:
@@ -38,6 +45,13 @@ class Miner:
 
         debug_msg = "Add block to chain with nonce: %d blobs:" % block.get_nonce()
         util.log_collection(logging.DEBUG, debug_msg, block.get_body().blobs)
+
+        block_num = len(self.chain)
+        for idx, blob in enumerate(block.get_body().blobs):
+
+            msg = request_pb2.BlobMessage()
+            msg.ParseFromString(blob)
+            self.mined_blobs[hash(msg.blob)].add((block_num, idx))
 
         self.chain.append(block)
 

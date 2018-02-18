@@ -22,6 +22,10 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
 
 
 def start_server(server):
+    """
+    Start a TCP or UDP server in a background thread.
+    :param server: The server to be started.
+    """
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True
     thread.start()

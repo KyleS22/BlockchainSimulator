@@ -1,16 +1,27 @@
 from miner import Miner
+from protos import request_pb2
+import time
 import server
+import logging
 
 
-class InputServer(server.TCPRequestHandler):
+class DataServer(server.TCPRequestHandler):
 
     def get_miner(self):
         return self.server.miner
 
     def receive(self, data):
 
-        print(data)
-        self.send(data.upper())
+        request = request_pb2.DataMessage()
+        request.timestamp = time.time()
+        request.data = data
+
+        logging.debug("Received data: (%f, %s)", request.timestamp, request.data)
+
+        msg = request.SerializeToString()
+        self.server.miner.add_data(msg)
+
+        # TODO forward msg to peers
 
 
 class Node:
@@ -19,7 +30,7 @@ class Node:
 
         self.miner = Miner()
 
-        input_server = server.TCPServer(9999, InputServer)
+        input_server = server.TCPServer(9999, DataServer)
         input_server.miner = self.miner
         server.start_server(input_server)
 

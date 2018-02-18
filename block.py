@@ -21,8 +21,8 @@ class BlockBuilder:
 
 class Block:
 
-    GENESIS_DIFFICULTY = 15
-    GENESIS_TIMESTAMP = 1518764469.288878
+    GENESIS_DIFFICULTY = 22
+    GENESIS_TIMESTAMP = 1518979622.604106
     GENESIS_NONCE = 0
 
     def get_difficulty(self):

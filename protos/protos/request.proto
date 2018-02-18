@@ -3,6 +3,7 @@ syntax = "proto3";
 enum RequestType {
 	BLOB = 0;
 	ALIVE = 1;
+	MINED_BLOCK = 2;
 }
 
 message Request {
@@ -13,4 +14,9 @@ message Request {
 message BlobMessage {
     double timestamp = 1;
     bytes blob = 2;
+}
+
+message MinedBlockMessage {
+    uint32 chain_cost = 1;
+    bytes block = 2;
 }

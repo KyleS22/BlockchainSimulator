@@ -64,9 +64,10 @@ class Miner:
         :param chain_cost: The total cost of the chain that the peer node is working on.
         """
         with self.chain_lock:
-
+            pass
             # only set dirty if chain is modified
-            self.dirty = True
+            # self.dirty = True
+
 
     def ___add_block(self, block):
         """
@@ -77,7 +78,7 @@ class Miner:
         self.chain.add(block)
 
         for handler in self.mine_event:
-            handler(block)
+            handler(block, self.chain.get_cost())
 
         with self.pending_blobs_lock:
             self.pending_blobs.difference_update(block.get_body().blobs)

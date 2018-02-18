@@ -12,14 +12,14 @@ class DataServer(server.TCPRequestHandler):
 
     def receive(self, data):
 
-        request = request_pb2.DataMessage()
+        request = request_pb2.BlobMessage()
         request.timestamp = time.time()
-        request.data = data
+        request.blob = data
 
-        logging.debug("Received data: (%f, %s)", request.timestamp, request.data)
+        logging.debug("Received data: (%f, %s)", request.timestamp, request.blob)
 
         msg = request.SerializeToString()
-        self.server.miner.add_data(msg)
+        self.server.miner.add(msg)
 
         # TODO forward msg to peers
 

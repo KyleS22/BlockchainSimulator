@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 enum RequestType {
-	DATA = 0;
+	BLOB = 0;
 }
 
 message Request {
@@ -9,7 +9,7 @@ message Request {
 	bytes request_message = 2;
 }
 
-message DataMessage {
+message BlobMessage {
     float timestamp = 1;
-    bytes data = 2;
+    bytes blob = 2;
 }

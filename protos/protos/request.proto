@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "protos/block.proto";
-
 enum RequestType {
 	BLOB = 0;
 	ALIVE = 1;
@@ -20,5 +18,5 @@ message BlobMessage {
 
 message MinedBlockMessage {
     uint32 chain_cost = 1;
-    Block block = 2;
+    bytes block = 2;
 }

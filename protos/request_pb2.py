@@ -14,16 +14,14 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-from protos import block_pb2 as protos_dot_block__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x14protos/request.proto\x1a\x12protos/block.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\">\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\x15\n\x05\x62lock\x18\x02 \x01(\x0b\x32\x06.Block*3\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x62\x06proto3')
-  ,
-  dependencies=[protos_dot_block__pb2.DESCRIPTOR,])
+  serialized_pb=_b('\n\x14protos/request.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\"6\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\r\n\x05\x62lock\x18\x02 \x01(\x0c*3\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x62\x06proto3')
+)
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
   name='RequestType',
@@ -46,8 +44,8 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=228,
-  serialized_end=279,
+  serialized_start=200,
+  serialized_end=251,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPE)
 
@@ -91,8 +89,8 @@ _REQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=44,
-  serialized_end=114,
+  serialized_start=24,
+  serialized_end=94,
 )
 
 
@@ -129,8 +127,8 @@ _BLOBMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=116,
-  serialized_end=162,
+  serialized_start=96,
+  serialized_end=142,
 )
 
 
@@ -150,8 +148,8 @@ _MINEDBLOCKMESSAGE = _descriptor.Descriptor(
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='block', full_name='MinedBlockMessage.block', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -167,12 +165,11 @@ _MINEDBLOCKMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=164,
-  serialized_end=226,
+  serialized_start=144,
+  serialized_end=198,
 )
 
 _REQUEST.fields_by_name['request_type'].enum_type = _REQUESTTYPE
-_MINEDBLOCKMESSAGE.fields_by_name['block'].message_type = protos_dot_block__pb2._BLOCK
 DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
 DESCRIPTOR.message_types_by_name['BlobMessage'] = _BLOBMESSAGE
 DESCRIPTOR.message_types_by_name['MinedBlockMessage'] = _MINEDBLOCKMESSAGE

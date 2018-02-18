@@ -7,12 +7,15 @@ import logging
 
 
 class DataServer(server.TCPRequestHandler):
-
-    def get_miner(self):
-        return self.server.miner
+    """
+    The data server for receiving incoming TCP binary data from outside the peer to peer network.
+    """
 
     def receive(self, data):
-
+        """
+        Receive binary data from an incoming TCP request that should be added to the block chain.
+        :param data: The binary data to be added to the block chain.
+        """
         request = request_pb2.BlobMessage()
         request.timestamp = time.time()
         request.blob = data
@@ -25,9 +28,13 @@ class DataServer(server.TCPRequestHandler):
 
 
 class RequestServer(server.TCPRequestHandler):
+    """
+    The request server for handling requests from nodes in the peer to peer network.
+    """
 
     def __init__(self, request, client_address, serv):
 
+        # Create the jump table to map between the RequestType enum and the request handlers.
         self.request_handlers = {
             request_pb2.BLOB: self.handle_blob,
             request_pb2.ALIVE: self.handle_alive
@@ -36,13 +43,19 @@ class RequestServer(server.TCPRequestHandler):
         server.TCPRequestHandler.__init__(self, request, client_address, serv)
 
     def receive(self, data):
+        """
+        Received binary messages from other nodes in the peer to peer network.
+        :param data: The binary data which should be decodable using the Request protocol buffer
+        """
 
+        # Try to parse the Request using the protocol buffer
         req = request_pb2.Request()
         try:
             req.ParseFromString(data)
         except message.DecodeError:
             logging.error("Error decoding request: %s", data)
 
+        # Call the corresponding request handler
         if req.request_type in self.request_handlers:
             self.request_handlers[req.request_type](data)
         else:
@@ -58,7 +71,9 @@ class RequestServer(server.TCPRequestHandler):
 class Node:
 
     def __init__(self):
-
+        """
+        Initialize the servers and miner required for a peer to peer node to operate.
+        """
         self.miner = Miner()
 
         self.request_server = server.TCPServer(10000, RequestServer)
@@ -66,18 +81,10 @@ class Node:
         self.input_server.miner = self.miner
 
     def run(self):
+        """
+        Run the servers for receiving incoming requests and start mining.
+        This method never returns.
+        """
         server.start_server(self.request_server)
         server.start_server(self.input_server)
         self.miner.mine()
-
-
-
-
-
-
-
-
-
-
-
-

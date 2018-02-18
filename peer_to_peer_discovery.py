@@ -24,6 +24,11 @@ class UDPDiscover:
         self._listen_port = listen_port
         self._tcp_port = tcp_port
 
+        tcp_server = server.TCPServer(tcp_port, server.TCPRequestHandler)
+        server.start_server(tcp_server)
+        logging.debug("%s %i Started TCP server ", socket.gethostbyname(socket.gethostname()),
+                      self._listen_port)
+
     def listen(self):
         """
         Listen for new broadcast messages
@@ -94,13 +99,18 @@ class UDPDiscover:
             elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
                 logging.debug("%s %i received connect message: %s %s", socket.gethostbyname(socket.gethostname()),
                               self._listen_port, str(message.ip_address), str(message.port))
-                # TODO: Start TCP connection with message.ip and message.port
+
+                # TODO: Connect to tcp server
 
             else:
                 logging.error("Invalid message received.")
 
 
 def start_discovery():
+    """
+    This will be what starts the discovery process on the node
+    :return:
+    """
     pass
 
 
@@ -113,9 +123,9 @@ if __name__ == "__main__":
 
     node2.broadcast(12344)
 
-    node3 = UDPDiscover(12347, 12332)
-    node3.listen()
-    node3.broadcast(12344)
+    # node3 = UDPDiscover(12347, 12332)
+    # node3.listen()
+    # node3.broadcast(12344)
 
 
 

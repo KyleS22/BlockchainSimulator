@@ -5,6 +5,8 @@ import logging
 import server
 import time
 
+#TODO: REMOVE THIS LATER
+logging.basicConfig(level=logging.DEBUG)
 
 class UDPDiscover:
     """
@@ -57,7 +59,7 @@ class UDPDiscover:
 
         sock.sendto(message.SerializeToString(), ('<broadcast>', port))
         sock.close()
-        print(socket.gethostbyname(socket.gethostname()), str(self._listen_port), "Sent broadcast")
+        logging.debug("%s %i sent broadcast", socket.gethostbyname(socket.gethostname()), self._listen_port)
 
     def UDPServer(self):
         """
@@ -83,21 +85,23 @@ class UDPDiscover:
                 reply.ip_address = self._node_ip
                 reply.port = self._tcp_port
 
-                print(socket.gethostbyname(socket.gethostname()), str(self._listen_port),  " Received discovery: ", message.ip_address, str(message.port))
+                logging.debug("%s %i received discovery: %s %s", socket.gethostbyname(socket.gethostname()),
+                              self._listen_port, str(message.ip_address), str(message.port))
 
                 sock.sendto(reply.SerializeToString(), (message.ip_address, message.port))
 
             # If IP and port for TCP connection, start TCP server
             elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
-                print(socket.gethostbyname(socket.gethostname()), str(self._listen_port),  " Received connect message: ", str(message.ip_address) + " " + str(message.port))
+                logging.debug("%s %i received connect message: %s %s", socket.gethostbyname(socket.gethostname()),
+                              self._listen_port, str(message.ip_address), str(message.port))
                 # TODO: Start TCP connection with message.ip and message.port
 
             else:
-                logging.debug("Invalid message received.")
+                logging.error("Invalid message received.")
+
 
 def start_discovery():
     pass
-
 
 
 if __name__ == "__main__":
@@ -112,7 +116,7 @@ if __name__ == "__main__":
     node3 = UDPDiscover(12347, 12332)
     node3.listen()
     node3.broadcast(12344)
-    
+
 
 
 

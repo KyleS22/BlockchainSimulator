@@ -26,11 +26,19 @@ class UDPDiscover:
         :param port: The port to send to
         :return: None
         """
+        broadcast_thread = threading.Thread(target=self.broadcast_thread, args=(port,))
+        broadcast_thread.start()
+
+    def broadcast_thread(self, port):
+        """
+        Thread logic for broadcasting
+        :param port:
+        :return:
+        """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         # TODO: Send a better message
         sock.sendto("TEST".encode(), ('<broadcast>', port))
-        # TODO: Await reply and do TCP connection stuff
 
     def UDPServer(self, port):
         """
@@ -42,9 +50,15 @@ class UDPDiscover:
         sock.bind(('', port))   # Empty string -> INADDR_ANY   For some reason <broadcast> does not work on windows.
 
         while True:
-            message = sock.recvfrom(1024)
-            print(message[0])
-            #TODO: reply with ip and port for TCP connection (define a protobuf for this)
+            message, address = sock.recvfrom(1024)
+            print(message)
+            # TODO: Check what type of message it is and handle appropriately
+
+            # If discovery message, reply with IP and port for TCP connection
+            sock.sendto("I'm Here!".encode(), address)
+
+            # If IP and port for TCP connection, start TCP server
+            
 
 
 if __name__ == "__main__":

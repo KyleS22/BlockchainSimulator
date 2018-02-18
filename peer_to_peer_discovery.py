@@ -6,6 +6,7 @@ Author: Kyle Seidenthal
 import socket
 import threading
 import protos.discovery_pb2 as disc_msg
+import logging
 
 class UDPDiscover:
     """
@@ -13,7 +14,7 @@ class UDPDiscover:
     """
 
     IP = 'localhost'
-    PORT = '12345'
+    LISTEN_PORT = 12345
 
     def listen(self, port):
         """
@@ -44,6 +45,8 @@ class UDPDiscover:
 
         message = disc_msg.DiscoveryMessage()
         message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
+        message.ip_address = self.IP
+        message.port = self.LISTEN_PORT
 
         sock.sendto(message.SerializeToString(), ('<broadcast>', port))
         print("Sent broadcast")
@@ -68,19 +71,18 @@ class UDPDiscover:
                 reply = disc_msg.DiscoveryMessage()
                 reply.message_type = disc_msg.DiscoveryMessage.CONNECT
                 reply.ip_address = self.IP
-                reply.port = self.PORT
+                reply.port = self.LISTEN_PORT
 
                 print("Received discovery")
                 print(address)
-                sock.sendto(message.SerializeToString(), address)
+                sock.sendto(reply.SerializeToString(), (message.ip_address, message.port))
 
             # If IP and port for TCP connection, start TCP server
             elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
-                print("Received connect message from: " + message.ip_address + " " + message.port)
+                print("Received connect message from: " + str(message.ip_address) + " " + str(message.port))
 
             else:
-                print("Something went wrong")
-
+                logging.debug("Invalid message received.")
 
 
 if __name__ == "__main__":

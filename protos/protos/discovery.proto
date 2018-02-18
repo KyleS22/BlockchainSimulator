@@ -9,5 +9,5 @@ message DiscoveryMessage{
 
     MessageType message_type = 1;
     string ip_address = 2;
-    string port = 3;
+    int32 port = 3;
 }

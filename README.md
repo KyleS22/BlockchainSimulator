@@ -1,2 +1,2 @@
-# CMPT434-Blockchain
+# Blockchain Simulator
 A blockchain implementation project

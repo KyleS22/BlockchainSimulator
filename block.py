@@ -36,6 +36,9 @@ class Block:
 
     def get_challenge(self):
         return 1 << self.header.difficulty
+
+    def get_nonce(self):
+        return self.nonce
     
     @classmethod
     def genesis(cls):
@@ -75,5 +78,4 @@ class Block:
             byte = hashcode[i // 8]
             if byte & (0x80 >> (i % 8)) != 0:
                 return False
-        print(self.nonce)
         return True

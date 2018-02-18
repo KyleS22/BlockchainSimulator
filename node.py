@@ -16,9 +16,8 @@ class DataServer(server.TCPRequestHandler):
         request.timestamp = time.time()
         request.blob = data
 
-        logging.debug("Received data: (%f, %s)", request.timestamp, request.blob)
-
         msg = request.SerializeToString()
+        logging.debug("Received data: (%f, %s) = %s", request.timestamp, request.blob, msg)
         self.server.miner.add(msg)
 
         # TODO forward msg to peers

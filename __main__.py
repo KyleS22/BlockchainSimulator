@@ -1,12 +1,11 @@
 import sys
-from miner import Miner
+from node import Node
 
 
-def run_project(args):
-
-    node = Miner()
-    node.mine()
+def main(args):
+    node = Node()
+    node.run()
 
 
 if __name__ == '__main__':
-    run_project(sys.argv)
+    main(sys.argv)

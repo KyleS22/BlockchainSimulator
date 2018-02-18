@@ -1,6 +1,7 @@
 from secrets import randbits
 from hashlib import sha256
 from protos import block_pb2
+from google.protobuf import message
 import time
 import copy
 
@@ -96,6 +97,19 @@ class Block:
         return cls(b'', cls.GENESIS_DIFFICULTY, block_pb2.BlockBody(), cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
 
     @classmethod
+    def decode(cls, prev_hash, data):
+        """
+        Decode a block from an encoded Block protocol buffer.
+        :param prev_hash: The hash of the block that the decoded block should attach to in the chain
+        :param data: The encoded block.
+        :return: The decoded block.
+        :except: If decoding fails then a DecodeError is thrown.
+        """
+        block = block_pb2.Block()
+        block.ParseFromString(data)
+        return cls(prev_hash, block.header.difficulty, block.body, block.header.timestamp, block.header.entropy, block.nonce)
+
+    @classmethod
     def block(cls, prev_hash, difficulty, body):
         """
         Creates a new block that can be mined and added to the end of the block chain.
@@ -145,6 +159,14 @@ class Block:
             the hash to satisfy the required difficulty.
         """
         self.nonce += 1
+
+    def encode(self):
+
+        block = block_pb2.Block()
+        block.nonce = self.nonce
+        block.header.CopyFrom(self.header)
+        block.body.CopyFrom(self.body)
+        return block.SerializeToString()
 
     def is_valid(self):
         """

@@ -2,6 +2,7 @@ from secrets import randbits
 from hashlib import sha256
 from protos import  block_pb2
 import time
+import copy
 
 
 class BlockBuilder:
@@ -15,7 +16,7 @@ class BlockBuilder:
         self.body.blobs.append(blob)
 
     def build(self):
-        return Block.block(self.prev_hash, self.difficulty, self.body.SerializeToString())
+        return Block.block(self.prev_hash, self.difficulty, self.body)
 
 
 class Block:
@@ -30,12 +31,15 @@ class Block:
     def get_timestamp(self):
         return self.header.timestamp
 
+    def get_body(self):
+        return self.body
+
     def get_challenge(self):
         return 1 << self.header.difficulty
     
     @classmethod
     def genesis(cls):
-        return cls(b'', cls.GENESIS_DIFFICULTY, b'', cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
+        return cls(b'', cls.GENESIS_DIFFICULTY, block_pb2.BlockBody(), cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
 
     @classmethod
     def block(cls, prev_hash, difficulty, body):
@@ -51,7 +55,7 @@ class Block:
         self.header.entropy = entropy
         self.header.timestamp = timestamp
         self.header.difficulty = difficulty
-        self.header.body_hash = sha256(body).digest()
+        self.header.body_hash = sha256(self.body.SerializeToString()).digest()
         self.cur_hash = sha256(self.header.SerializeToString()).digest()
 
     def hash(self):

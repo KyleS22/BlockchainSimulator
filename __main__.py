@@ -1,5 +1,9 @@
 import sys
 from node import Node
+import logging
+
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def main(args):

@@ -1,11 +1,14 @@
 from block import Block, BlockBuilder
 import math
 import time
-
+import threading
 
 class Miner:
 
     DIFFICULTY_TARGET = 10.0
+
+    pending_data_lock = threading.Lock()
+    pending_data = set()
 
     chain = []
 
@@ -24,6 +27,10 @@ class Miner:
             self.chain.append(cur)
 
             cur = self.__next_block()
+
+    def add_data(self, data):
+        with self.pending_data_lock:
+            self.pending_data.add(data)
 
     def __next_block(self):
 

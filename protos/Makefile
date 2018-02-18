@@ -3,7 +3,7 @@ CFLAGS = --python_out=.
 
 .PHONEY: all clean
 
-all: block_pb2.py
+all: block_pb2.py request_pb2.py
 
 %_pb2.py: %.proto
 	$(CC) $(CFLAGS) $<

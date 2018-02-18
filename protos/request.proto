@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+enum RequestType {
+	DATA = 0;
+}
+
+message Request {
+	RequestType request_type = 1;
+	bytes request_message = 2;
+}
+
+message DataMessage {
+    float timestamp = 1;
+    bytes data = 2;
+}

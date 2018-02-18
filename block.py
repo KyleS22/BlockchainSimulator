@@ -49,10 +49,10 @@ class Block:
     GENESIS_TIMESTAMP = 1518979622.604106
 
     """
-    The starting nonce for genesis block. This can be changed to prevent the need
-    to mine the genesis block.
+    The starting nonce for genesis block. This should be updated to ensure the genesis
+    hash meets the required difficulty if the difficulty or timestamp are changed.
     """
-    GENESIS_NONCE = 0
+    GENESIS_NONCE = 1078537
 
     def get_difficulty(self):
         """

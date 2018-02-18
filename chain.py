@@ -7,6 +7,9 @@ from protos import request_pb2
 
 class Chain:
 
+    def get_cost(self):
+        return self.__cost
+
     def __init__(self):
 
         # the dictionary of mined blobs to allow a blob to be looked up using its hash to find which block it is in
@@ -16,7 +19,7 @@ class Chain:
         genesis = Block.genesis()
         self.blocks.append(genesis)
 
-        self.cost = 0
+        self.__cost = genesis.get_cost()
 
     def add(self, block):
         """
@@ -32,6 +35,7 @@ class Chain:
             msg.ParseFromString(blob)
             self.mined_blobs[hash(msg.blob)].add((block_num, idx))
 
+        self.__cost += block.get_cost()
         self.blocks.append(block)
 
     def next(self, difficulty, blobs):
@@ -56,6 +60,9 @@ class Chain:
         Tests whether the chain is valid by computing and verifying the chain of hashes
         :return: True if the chain is valid, otherwise False
         """
+        if not self.blocks[0].is_valid():
+            logging.error("Invalid genesis block: The genesis nonce requires updating.")
+            return False
         for i in range(1, len(self.blocks)):
             cur = self.blocks[i]
             prev = self.blocks[i - 1]

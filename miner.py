@@ -41,7 +41,7 @@ class Miner:
                 if not self.dirty:
                     self.___add_block(cur)
 
-                logging.debug("Valid chain: %s", self.chain.is_valid())
+                logging.debug("Valid chain: %s Cost: %d", self.chain.is_valid(), self.chain.get_cost())
 
                 difficulty = self.__compute_difficulty()
                 with self.pending_blobs_lock:

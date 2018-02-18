@@ -1,0 +1,13 @@
+syntax="proto3";
+
+message DiscoveryMessage{
+
+    enum MessageType{
+        DISCOVERY = 0;
+        CONNECT = 1;
+    }
+
+    MessageType message_type = 1;
+    string ip_address = 2;
+    string port = 3;
+}

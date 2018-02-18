@@ -5,11 +5,15 @@ Author: Kyle Seidenthal
 """
 import socket
 import threading
+import protos.discovery_pb2 as disc_msg
 
 class UDPDiscover:
     """
     Broadcasts to all nodes on network and waits for response
     """
+
+    IP = 'localhost'
+    PORT = '12345'
 
     def listen(self, port):
         """
@@ -26,11 +30,23 @@ class UDPDiscover:
         :param port: The port to send to
         :return: None
         """
+        broadcast_thread = threading.Thread(target=self.broadcast_thread, args=(port,))
+        broadcast_thread.start()
+
+    def broadcast_thread(self, port):
+        """
+        Thread logic for broadcasting
+        :param port:
+        :return:
+        """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        # TODO: Send a better message
-        sock.sendto("TEST".encode(), ('<broadcast>', port))
-        # TODO: Await reply and do TCP connection stuff
+
+        message = disc_msg.DiscoveryMessage()
+        message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
+
+        sock.sendto(message.SerializeToString(), ('<broadcast>', port))
+        print("Sent broadcast")
 
     def UDPServer(self, port):
         """
@@ -42,9 +58,29 @@ class UDPDiscover:
         sock.bind(('', port))   # Empty string -> INADDR_ANY   For some reason <broadcast> does not work on windows.
 
         while True:
-            message = sock.recvfrom(1024)
-            print(message[0])
-            #TODO: reply with ip and port for TCP connection (define a protobuf for this)
+            in_message, address = sock.recvfrom(1024)
+
+            message = disc_msg.DiscoveryMessage()
+            message.ParseFromString(in_message)
+
+            # If discovery message, reply with IP and port for TCP connection
+            if message.message_type == disc_msg.DiscoveryMessage.DISCOVERY:
+                reply = disc_msg.DiscoveryMessage()
+                reply.message_type = disc_msg.DiscoveryMessage.CONNECT
+                reply.ip_address = self.IP
+                reply.port = self.PORT
+
+                print("Received discovery")
+                print(address)
+                sock.sendto(message.SerializeToString(), address)
+
+            # If IP and port for TCP connection, start TCP server
+            elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
+                print("Received connect message from: " + message.ip_address + " " + message.port)
+
+            else:
+                print("Something went wrong")
+
 
 
 if __name__ == "__main__":

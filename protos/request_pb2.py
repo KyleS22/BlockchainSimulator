@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c*\x17\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c*\"\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x62\x06proto3')
 )
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
@@ -33,16 +33,21 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
       name='BLOB', index=0, number=0,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ALIVE', index=1, number=1,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
   serialized_start=137,
-  serialized_end=160,
+  serialized_end=171,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPE)
 
 RequestType = enum_type_wrapper.EnumTypeWrapper(_REQUESTTYPE)
 BLOB = 0
+ALIVE = 1
 
 
 

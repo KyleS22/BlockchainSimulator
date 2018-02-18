@@ -2,6 +2,7 @@ syntax = "proto3";
 
 enum RequestType {
 	BLOB = 0;
+	ALIVE = 1;
 }
 
 message Request {

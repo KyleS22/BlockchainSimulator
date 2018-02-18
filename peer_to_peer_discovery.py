@@ -1,28 +1,34 @@
-"""
-
-
-Author: Kyle Seidenthal
-"""
 import socket
 import threading
 import protos.discovery_pb2 as disc_msg
 import logging
+import server
+import time
+
 
 class UDPDiscover:
     """
     Broadcasts to all nodes on network and waits for response
     """
 
-    IP = 'localhost'
-    LISTEN_PORT = 12345
 
-    def listen(self, port):
+    def __init__(self, listen_port, tcp_port):
+        """
+        Constructor for discovery
+        :param listen_port: The port to listen for UDP packets on
+        :param tcp_port: The port to use to create new TCP connections
+        """
+        self._node_ip = socket.gethostbyname(socket.gethostname())
+        self._listen_port = listen_port
+        self._tcp_port = tcp_port
+
+    def listen(self):
         """
         Listen for new broadcast messages
         :param port: The port to listen on
         :return: None
         """
-        listen_thread = threading.Thread(target=self.UDPServer, args=(port, ))
+        listen_thread = threading.Thread(target=self.UDPServer)
         listen_thread.start()
 
     def broadcast(self, port):
@@ -37,28 +43,30 @@ class UDPDiscover:
     def broadcast_thread(self, port):
         """
         Thread logic for broadcasting
-        :param port:
-        :return:
+        :param port: The port to send to
+        :return: None
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
+        # Send my ip and listen port to other nodes so they can reply
         message = disc_msg.DiscoveryMessage()
         message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
-        message.ip_address = self.IP
-        message.port = self.LISTEN_PORT
+        message.ip_address = self._node_ip
+        message.port = self._listen_port
 
         sock.sendto(message.SerializeToString(), ('<broadcast>', port))
-        print("Sent broadcast")
+        sock.close()
+        print(socket.gethostbyname(socket.gethostname()), str(self._listen_port), "Sent broadcast")
 
-    def UDPServer(self, port):
+    def UDPServer(self):
         """
         Start listening for new broadcast messages
         :param port: The port to listen on
         :return: None
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.bind(('', port))   # Empty string -> INADDR_ANY   For some reason <broadcast> does not work on windows.
+        sock.bind(('', self._listen_port))   # Empty string -> INADDR_ANY   For some reason <broadcast> does not work on windows.
 
         while True:
             in_message, address = sock.recvfrom(1024)
@@ -68,29 +76,43 @@ class UDPDiscover:
 
             # If discovery message, reply with IP and port for TCP connection
             if message.message_type == disc_msg.DiscoveryMessage.DISCOVERY:
+
+                # Send IP and TCP port so they can connect
                 reply = disc_msg.DiscoveryMessage()
                 reply.message_type = disc_msg.DiscoveryMessage.CONNECT
-                reply.ip_address = self.IP
-                reply.port = self.LISTEN_PORT
+                reply.ip_address = self._node_ip
+                reply.port = self._tcp_port
 
-                print("Received discovery")
-                print(address)
+                print(socket.gethostbyname(socket.gethostname()), str(self._listen_port),  " Received discovery: ", message.ip_address, str(message.port))
+
                 sock.sendto(reply.SerializeToString(), (message.ip_address, message.port))
 
             # If IP and port for TCP connection, start TCP server
             elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
-                print("Received connect message from: " + str(message.ip_address) + " " + str(message.port))
+                print(socket.gethostbyname(socket.gethostname()), str(self._listen_port),  " Received connect message: ", str(message.ip_address) + " " + str(message.port))
+                # TODO: Start TCP connection with message.ip and message.port
 
             else:
                 logging.debug("Invalid message received.")
 
+def start_discovery():
+    pass
+
+
 
 if __name__ == "__main__":
-    node = UDPDiscover()
-    node.listen(12345)
+    node = UDPDiscover(12344, 11111)
+    node.listen()
 
-    node2 = UDPDiscover()
-    node.broadcast(12345)
+    node2 = UDPDiscover(12345, 12333)
+    node2.listen()
+
+    node2.broadcast(12344)
+
+    node3 = UDPDiscover(12347, 12332)
+    node3.listen()
+    node3.broadcast(12344)
+    
 
 
 

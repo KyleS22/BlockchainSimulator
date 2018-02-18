@@ -4,6 +4,7 @@ from google.protobuf import message
 import time
 import server
 import logging
+import socket
 
 
 class DataServer(server.TCPRequestHandler):
@@ -37,7 +38,8 @@ class RequestServer(server.TCPRequestHandler):
         # Create the jump table to map between the RequestType enum and the request handlers.
         self.request_handlers = {
             request_pb2.BLOB: self.handle_blob,
-            request_pb2.ALIVE: self.handle_alive
+            request_pb2.ALIVE: self.handle_alive,
+            request_pb2.MINED_BLOCK: self.handle_mined_block
         }
 
         server.TCPRequestHandler.__init__(self, request, client_address, serv)
@@ -54,10 +56,11 @@ class RequestServer(server.TCPRequestHandler):
             req.ParseFromString(data)
         except message.DecodeError:
             logging.error("Error decoding request: %s", data)
+            return
 
         # Call the corresponding request handler
         if req.request_type in self.request_handlers:
-            self.request_handlers[req.request_type](data)
+            self.request_handlers[req.request_type](req.request_message)
         else:
             logging.error("Unsupported request type: %s", req.request_type)
 
@@ -66,6 +69,17 @@ class RequestServer(server.TCPRequestHandler):
 
     def handle_alive(self, data):
         pass
+
+    def handle_mined_block(self, data):
+
+        msg = request_pb2.MinedBlockMessage()
+        try:
+            msg.ParseFromString(data)
+        except message.DecodeError:
+            logging.error("Error decoding message: %s", data)
+            return
+
+        self.server.miner.receive_block(msg.block, msg.chain_cost)
 
 
 class Node:
@@ -78,10 +92,12 @@ class Node:
         self.miner.mine_event.append(self.block_mined)
 
         self.request_server = server.TCPServer(10000, RequestServer)
+        self.request_server.miner = self.miner
+
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-    def block_mined(self, block):
+    def block_mined(self, block, chain_cost):
         pass
 
     def run(self):

@@ -3,7 +3,7 @@ import math
 import time
 
 
-class Node:
+class Miner:
 
     DIFFICULTY_TARGET = 10.0
 
@@ -39,6 +39,6 @@ class Node:
 
         # TODO Add sliding window difficulty recalculation
         delta = time.time() - self.chain[-1].get_timestamp()
-        difficulty = math.log2(Node.DIFFICULTY_TARGET / delta) + prev.get_difficulty()
+        difficulty = math.log2(Miner.DIFFICULTY_TARGET / delta) * 0.1 + prev.get_difficulty()
         print("new difficulty: " + str(difficulty) + " delta: " + str(delta))
         return int(round(max(difficulty, 1)))

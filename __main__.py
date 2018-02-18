@@ -1,10 +1,10 @@
 import sys
-from node import Node
+from miner import Miner
 
 
 def run_project(args):
 
-    node = Node()
+    node = Miner()
     node.mine()
 
 

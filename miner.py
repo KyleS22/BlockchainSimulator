@@ -5,16 +5,17 @@ import threading
 import logging
 import util
 
+
 class Miner:
 
     DIFFICULTY_TARGET = 10.0
 
-    pending_blobs_lock = threading.Lock()
-    pending_blobs = set()
-
-    chain = []
-
     def __init__(self):
+
+        self.pending_blobs_lock = threading.Lock()
+        self.pending_blobs = set()
+
+        self.chain = []
         genesis = Block.genesis()
         self.chain.append(genesis)
 

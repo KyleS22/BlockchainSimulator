@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x02\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c*\x17\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x62\x06proto3')
+  serialized_pb=_b('\n\rrequest.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c*\x17\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x62\x06proto3')
 )
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
@@ -93,7 +93,7 @@ _BLOBMESSAGE = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='timestamp', full_name='BlobMessage.timestamp', index=0,
-      number=1, type=2, cpp_type=6, label=1,
+      number=1, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,

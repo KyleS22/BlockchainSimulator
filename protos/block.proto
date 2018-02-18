@@ -2,7 +2,7 @@ syntax = "proto3";
 
 message BlockHeader {
     fixed32 entropy = 1;
-    float timestamp = 2;
+    double timestamp = 2;
     fixed32 difficulty = 3;
     bytes body_hash = 4;
 }

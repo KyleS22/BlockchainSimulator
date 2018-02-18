@@ -10,6 +10,6 @@ message Request {
 }
 
 message BlobMessage {
-    float timestamp = 1;
+    double timestamp = 1;
     bytes blob = 2;
 }

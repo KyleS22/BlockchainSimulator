@@ -10,7 +10,7 @@ import util
 
 class Miner:
 
-    DIFFICULTY_TARGET = 10.0
+    DIFFICULTY_TARGET = 15.0
 
     def __init__(self):
 
@@ -25,23 +25,37 @@ class Miner:
         genesis = Block.genesis()
         self.chain.append(genesis)
 
+        # If the block chain has been modified since mining started
+        self.dirty = True
+
     def mine(self):
 
-        cur = self.__next_block()
         while True:
-            while not cur.is_valid():
+            while not self.dirty and not cur.is_valid():
                 cur.next()
 
-            # TODO Add interrupt to stop mining and move to the next block if a block is received from another node
             with self.chain_lock:
-                self.__add_block(cur)
-                cur = self.__next_block()
+                if not self.dirty:
+                    self.___add_block(cur)
+
+                logging.debug("Valid chain: %s", self.is_valid())
+
+                difficulty = self.__compute_difficulty()
+                cur = self.__next_block(difficulty)
+                self.dirty = False
 
     def add(self, msg):
         with self.pending_blobs_lock:
             self.pending_blobs.add(msg)
 
-    def __add_block(self, block):
+    def receive_block(self, block, chain_cost):
+
+        with self.chain_lock:
+
+            # only set dirty if chain is modified
+            self.dirty = True
+
+    def ___add_block(self, block):
 
         debug_msg = "Add block to chain with nonce: %d blobs:" % block.get_nonce()
         util.log_collection(logging.DEBUG, debug_msg, block.get_body().blobs)
@@ -58,10 +72,9 @@ class Miner:
         with self.pending_blobs_lock:
             self.pending_blobs.difference_update(block.get_body().blobs)
 
-    def __next_block(self):
+    def __next_block(self, difficulty):
 
         prev = self.chain[-1]
-        difficulty = self.__update_difficulty()
         builder = BlockBuilder(prev.hash(), difficulty)
 
         with self.pending_blobs_lock:
@@ -73,7 +86,7 @@ class Miner:
                 builder.add(blob)
         return builder.build()
 
-    def __update_difficulty(self):
+    def __compute_difficulty(self):
 
         prev = self.chain[-1]
         if len(self.chain) == 1:
@@ -86,3 +99,12 @@ class Miner:
         logging.info("New difficulty: %f Delta: %f", difficulty, delta)
 
         return int(round(max(difficulty, 1)))
+
+    def is_valid(self):
+
+        for i in range(1, len(self.chain)):
+            cur = self.chain[i]
+            prev = self.chain[i - 1]
+            if cur.prev_hash != prev.hash() or not cur.is_valid():
+                return False
+        return True

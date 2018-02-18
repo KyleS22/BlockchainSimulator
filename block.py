@@ -1,6 +1,6 @@
 from secrets import randbits
 from hashlib import sha256
-import block_pb2
+from protos import  block_pb2
 import time
 
 

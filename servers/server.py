@@ -6,7 +6,11 @@ import protos.discovery_pb2 as disc_msg
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
+    allow_reuse_address = True
+
     def __init__(self, port, handler):
+        socketserver.TCPServer.allow_reuse_address = True
+        logging.debug("Resuse :%s", self.allow_reuse_address)
         socketserver.TCPServer.__init__(self, ("", port), handler)
 
 
@@ -25,8 +29,11 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
+    allow_reuse_address = True
+
     def __init__(self, port, handler):
-        socketserver.TCPServer.__init__(self, ("", port), handler)
+        socketserver.UDPServer.allow_reuse_address = True
+        socketserver.UDPServer.__init__(self, ("", port), handler)
 
 
 class UDPRequestHandler(socketserver.BaseRequestHandler):

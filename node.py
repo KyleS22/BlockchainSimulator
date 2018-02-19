@@ -6,6 +6,7 @@ import server
 import logging
 import socket
 import peer_to_peer_discovery as p2p
+import protos.discovery_pb2 as disc_msg
 
 
 class DataServer(server.TCPRequestHandler):
@@ -82,6 +83,17 @@ class RequestServer(server.TCPRequestHandler):
 
         self.server.miner.receive_block(msg.block, msg.chain_cost)
 
+class DiscoveryServer(server.UDPRequestHandler):
+
+    def __init__(self):
+        self.nodes = []
+
+    def receive(self, data):
+
+        if self.client_address[0] not in self.nodes:
+            self.nodes.append(self.client_address[0])
+            logging.debug("Received new ip %s", str(self.client_address[0]))
+
 
 class Node:
 
@@ -98,7 +110,9 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        self.p2pServer = p2p.UDPDiscover(9998, 5)
+        self.udp_server = server.UDPServer(9998, DiscoveryServer)
+
+        self.udp_broadcaster = p2p.UDPBroadcaster(9998, 5)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -110,6 +124,8 @@ class Node:
         """
         server.start_server(self.request_server)
         server.start_server(self.input_server)
-        self.p2pServer.listen()
-        self.p2pServer.broadcast(9998)
+        server.start_server(self.udp_server)
+        p2p.start_discovery(self.udp_broadcaster)
+
+
         self.miner.mine()

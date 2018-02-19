@@ -1,5 +1,7 @@
 import socketserver
 import threading
+import logging
+import protos.discovery_pb2 as disc_msg
 
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -20,6 +22,24 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
     def send(self, data):
         self.request.sendall(data)
 
+class UDPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+
+    def __init__(self, port, handler):
+        socketserver.UDPServer.__init__(self, ("", port), handler)
+
+
+class UDPRequestHandler(socketserver.BaseRequestHandler):
+
+    def handle(self):
+        data = self.request[0].strip()
+        socket = self.request[1]
+
+        logging.debug("received broadcast: %s", self.client_address[0])
+
+        self.receive(data)
+
+    def receive(self, data):
+        pass
 
 def start_server(server):
     """

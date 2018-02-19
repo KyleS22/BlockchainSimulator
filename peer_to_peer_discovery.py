@@ -5,25 +5,21 @@ import logging
 import server
 import time
 
-#TODO: REMOVE THIS LATER
-#logging.basicConfig(level=logging.DEBUG)
-
 class UDPDiscover:
     """
     Broadcasts to all nodes on network and waits for response
     """
 
 
-    def __init__(self, listen_port, tcp_port, timeout):
+    def __init__(self, listen_port, timeout):
         """
         Constructor for discovery
         :param listen_port: The port to listen for UDP packets on
         :param tcp_port: The port to use to create new TCP connections
         """
-        self._node_ip = socket.gethostbyname(socket.gethostname())
         self._listen_port = listen_port
-        self._tcp_port = tcp_port
         self.timeout = timeout
+        self.nodes = []
 
     def listen(self):
         """
@@ -52,12 +48,9 @@ class UDPDiscover:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-        # TODO: just send my ip
-        # Send my ip and listen port to other nodes so they can reply
+        # Send a message
         message = disc_msg.DiscoveryMessage()
         message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
-        message.ip_address = self._node_ip
-        message.port = self._listen_port
 
         # TODO: Repeat broadcast on self.timeout
 
@@ -80,50 +73,10 @@ class UDPDiscover:
             message = disc_msg.DiscoveryMessage()
             message.ParseFromString(in_message)
 
-            # TODO: maintain list of ips instead, don't reply
-            # If discovery message, reply with IP and port for TCP connection
-            if message.message_type == disc_msg.DiscoveryMessage.DISCOVERY:
+            if address[0] not in self.nodes:
+                self.nodes.append(address[0])
+                logging.debug("Received new ip %s", str(address[0]))
 
-                # Send IP and TCP port so they can connect
-                reply = disc_msg.DiscoveryMessage()
-                reply.message_type = disc_msg.DiscoveryMessage.CONNECT
-                reply.ip_address = self._node_ip
-                reply.port = self._tcp_port
-
-                logging.debug("%s %i received discovery: %s %s", socket.gethostbyname(socket.gethostname()),
-                              self._listen_port, str(message.ip_address), str(message.port))
-
-                sock.sendto(reply.SerializeToString(), (message.ip_address, message.port))
-
-            # If IP and port for TCP connection, start TCP server
-            elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
-                logging.debug("%s %i received connect message: %s %s", socket.gethostbyname(socket.gethostname()),
-                              self._listen_port, str(message.ip_address), str(message.port))
-
-            else:
-                logging.error("Invalid message received.")
-
-
-def start_discovery():
-    """
-    This will be what starts the discovery process on the node
-    :return:
-    """
-    pass
-
-
-# if __name__ == "__main__":
-#     node = UDPDiscover(12344, 11111, 5)
-#     node.listen()
-#
-#     node2 = UDPDiscover(12345, 12333, 5)
-#     node2.listen()
-#
-#     node2.broadcast(12344)
-#
-#     # node3 = UDPDiscover(12347, 12332)
-#     # node3.listen()
-#     # node3.broadcast(12344)
 
 
 

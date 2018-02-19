@@ -98,7 +98,7 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        self.p2pServer = p2p.UDPDiscover(1234, 1111, 5)
+        self.p2pServer = p2p.UDPDiscover(9998, 5)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -111,5 +111,5 @@ class Node:
         server.start_server(self.request_server)
         server.start_server(self.input_server)
         self.p2pServer.listen()
-        self.p2pServer.broadcast(1234)
+        self.p2pServer.broadcast(9998)
         self.miner.mine()

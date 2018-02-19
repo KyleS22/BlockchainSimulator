@@ -28,7 +28,7 @@ class UDPBroadcaster:
         :param port: The port to send to
         :return: None
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
         # Send a message
@@ -37,7 +37,7 @@ class UDPBroadcaster:
 
         # TODO: Repeat broadcast on self.timeout
 
-        sock.sendto(message.SerializeToString(), ('<broadcast>', self.broadcast_port))
+        sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
         logging.debug("Sent broadcast")
         sock.close()
 

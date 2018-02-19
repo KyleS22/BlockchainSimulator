@@ -90,6 +90,8 @@ class DiscoveryServer(server.UDPRequestHandler):
 
     def receive(self, data):
 
+        logging.debug("Got broadcast message")
+
         if self.client_address[0] not in self.nodes:
             self.nodes.append(self.client_address[0])
             logging.debug("Received new ip %s", str(self.client_address[0]))

@@ -5,6 +5,7 @@ WORKDIR /blobchain
 
 ADD *.py ./
 ADD protos/*.py ./protos/
+ADD servers/*.py ./servers/
 ADD requirements.txt ./
 
 RUN pip install -r ./requirements.txt

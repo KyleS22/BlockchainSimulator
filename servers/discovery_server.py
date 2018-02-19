@@ -1,6 +1,6 @@
 from servers import server
 import logging
-
+import protos.discovery_pb2 as disc_msg
 
 class DiscoveryServer(server.UDPRequestHandler):
 
@@ -12,8 +12,12 @@ class DiscoveryServer(server.UDPRequestHandler):
     def receive(self, data):
 
         logging.debug("Got broadcast message")
+        message = disc_msg.DiscoveryMessage()
+        message.ParseFromString(data)
 
-        if self.client_address[0] not in self.server.neighbour_list:
+        # TODO: Catch message parse errors
+
+        if message.node_id != self.server.node_id and self.client_address[0] not in self.server.neighbour_list:
             self.server.neighbour_list.append(self.client_address[0])
             logging.debug("Received new ip %s", str(self.client_address[0]))
             logging.debug(self.server.neighbour_list)

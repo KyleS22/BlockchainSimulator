@@ -26,11 +26,11 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
-    def __init__(self, port, handler):
+    def __init__(self, port, handler, node_id=None):
         socketserver.UDPServer.allow_reuse_address = True
 
         self.neighbour_list = []
-
+        self.node_id = node_id
         socketserver.UDPServer.__init__(self, ("", port), handler)
 
 

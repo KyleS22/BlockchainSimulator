@@ -10,7 +10,7 @@ class UDPBroadcaster:
     Broadcasts to all nodes on network and waits for response
     """
 
-    def __init__(self, port, timeout):
+    def __init__(self, port, timeout, node_id):
         """
         Constructor for discovery
         :param listen_port: The port to listen for UDP packets on
@@ -18,6 +18,7 @@ class UDPBroadcaster:
         """
         self.timeout = timeout
         self.broadcast_port = port
+        self.node_id = node_id
 
     def broadcast_thread(self):
         """
@@ -27,13 +28,12 @@ class UDPBroadcaster:
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         # Send a message
         message = disc_msg.DiscoveryMessage()
         message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
-
-        # TODO: Repeat broadcast on self.timeout
+        message.node_id = self.node_id
 
         while True:
             sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))

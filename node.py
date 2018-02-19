@@ -3,6 +3,7 @@ from servers import server
 from servers.data_server import DataServer
 from servers.request_server import RequestServer
 from servers.discovery_server import DiscoveryServer
+from secrets import token_bytes
 import peer_to_peer_discovery as p2p
 import logging
 
@@ -13,6 +14,8 @@ class Node:
         """
         Initialize the servers and miner required for a peer to peer node to operate.
         """
+        self.node_id = str(token_bytes(16))
+
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
 
@@ -22,8 +25,8 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        self.udp_server = server.UDPServer(10029, DiscoveryServer)
-        self.udp_broadcaster = p2p.UDPBroadcaster(10029, 5)
+        self.udp_server = server.UDPServer(10029, DiscoveryServer, self.node_id)
+        self.udp_broadcaster = p2p.UDPBroadcaster(10029, 5, self.node_id)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -34,7 +37,7 @@ class Node:
         This method never returns.
         """
         logging.debug("enable")
-
+        logging.debug(self.node_id)
         server.start_server(self.request_server)
         server.start_server(self.input_server)
         server.start_server(self.udp_server)

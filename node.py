@@ -87,7 +87,6 @@ class RequestServer(server.TCPRequestHandler):
 class DiscoveryServer(server.UDPRequestHandler):
 
     def __init__(self, request, client_address, serv):
-        self.nodes = []
 
         server.UDPRequestHandler.__init__(self, request, client_address, serv)
 
@@ -96,10 +95,10 @@ class DiscoveryServer(server.UDPRequestHandler):
 
         logging.debug("Got broadcast message")
 
-        if self.client_address[0] not in self.nodes:
-            self.nodes.append(self.client_address[0])
+        if self.client_address[0] not in self.server.neighbur_list:
+            self.server.neighbur_list.append(self.client_address[0])
             logging.debug("Received new ip %s", str(self.client_address[0]))
-
+            logging.debug(self.server.neighbur_list)
 
 class Node:
 

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/discovery.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x16protos/discovery.proto\"\x94\x01\n\x10\x44iscoveryMessage\x12\x33\n\x0cmessage_type\x18\x01 \x01(\x0e\x32\x1d.DiscoveryMessage.MessageType\x12\x12\n\nip_address\x18\x02 \x01(\t\x12\x0c\n\x04port\x18\x03 \x01(\x05\")\n\x0bMessageType\x12\r\n\tDISCOVERY\x10\x00\x12\x0b\n\x07\x43ONNECT\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x16protos/discovery.proto\"\x83\x01\n\x10\x44iscoveryMessage\x12\x33\n\x0cmessage_type\x18\x01 \x01(\x0e\x32\x1d.DiscoveryMessage.MessageType\x12\x0f\n\x07node_id\x18\x02 \x01(\x0c\")\n\x0bMessageType\x12\r\n\tDISCOVERY\x10\x00\x12\x0b\n\x07\x43ONNECT\x10\x01\x62\x06proto3')
 )
 
 
@@ -41,8 +41,8 @@ _DISCOVERYMESSAGE_MESSAGETYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=134,
-  serialized_end=175,
+  serialized_start=117,
+  serialized_end=158,
 )
 _sym_db.RegisterEnumDescriptor(_DISCOVERYMESSAGE_MESSAGETYPE)
 
@@ -62,16 +62,9 @@ _DISCOVERYMESSAGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ip_address', full_name='DiscoveryMessage.ip_address', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='port', full_name='DiscoveryMessage.port', index=2,
-      number=3, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      name='node_id', full_name='DiscoveryMessage.node_id', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
@@ -89,7 +82,7 @@ _DISCOVERYMESSAGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=27,
-  serialized_end=175,
+  serialized_end=158,
 )
 
 _DISCOVERYMESSAGE.fields_by_name['message_type'].enum_type = _DISCOVERYMESSAGE_MESSAGETYPE

@@ -95,10 +95,10 @@ class DiscoveryServer(server.UDPRequestHandler):
 
         logging.debug("Got broadcast message")
 
-        if self.client_address[0] not in self.server.neighbur_list:
-            self.server.neighbur_list.append(self.client_address[0])
+        if self.client_address[0] not in self.server.neighbour_list:
+            self.server.neighbour_list.append(self.client_address[0])
             logging.debug("Received new ip %s", str(self.client_address[0]))
-            logging.debug(self.server.neighbur_list)
+            logging.debug(self.server.neighbour_list)
 
 class Node:
 

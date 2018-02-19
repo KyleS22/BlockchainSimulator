@@ -26,7 +26,7 @@ class DiscoveryServer(server.UDPRequestHandler):
                 # Update the timestamp if the entry exists
                 for node, stamp in self.server.neighbour_list:
                     if node == self.client_address[0]:
-                        self.server.neighbour_list[i] = (self.client_address, timestamp)
+                        self.server.neighbour_list[i] = (self.client_address[0], timestamp)
                     i += 1
 
             # This is a new entry

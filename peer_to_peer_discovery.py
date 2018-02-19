@@ -24,11 +24,6 @@ class UDPDiscover:
         self._listen_port = listen_port
         self._tcp_port = tcp_port
 
-        tcp_server = server.TCPServer(tcp_port, server.TCPRequestHandler)
-        server.start_server(tcp_server)
-        logging.debug("%s %i Started TCP server ", socket.gethostbyname(socket.gethostname()),
-                      self._listen_port)
-
     def listen(self):
         """
         Listen for new broadcast messages

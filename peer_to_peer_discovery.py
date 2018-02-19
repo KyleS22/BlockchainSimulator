@@ -6,7 +6,7 @@ import server
 import time
 
 #TODO: REMOVE THIS LATER
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 
 class UDPDiscover:
     """
@@ -112,18 +112,18 @@ def start_discovery():
     pass
 
 
-if __name__ == "__main__":
-    node = UDPDiscover(12344, 11111)
-    node.listen()
-
-    node2 = UDPDiscover(12345, 12333)
-    node2.listen()
-
-    node2.broadcast(12344)
-
-    # node3 = UDPDiscover(12347, 12332)
-    # node3.listen()
-    # node3.broadcast(12344)
+# if __name__ == "__main__":
+#     node = UDPDiscover(12344, 11111, 5)
+#     node.listen()
+#
+#     node2 = UDPDiscover(12345, 12333, 5)
+#     node2.listen()
+#
+#     node2.broadcast(12344)
+#
+#     # node3 = UDPDiscover(12347, 12332)
+#     # node3.listen()
+#     # node3.broadcast(12344)
 
 
 

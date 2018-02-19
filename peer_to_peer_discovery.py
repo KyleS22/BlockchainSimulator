@@ -14,7 +14,7 @@ class UDPDiscover:
     """
 
 
-    def __init__(self, listen_port, tcp_port):
+    def __init__(self, listen_port, tcp_port, timeout):
         """
         Constructor for discovery
         :param listen_port: The port to listen for UDP packets on
@@ -23,6 +23,7 @@ class UDPDiscover:
         self._node_ip = socket.gethostbyname(socket.gethostname())
         self._listen_port = listen_port
         self._tcp_port = tcp_port
+        self.timeout = timeout
 
     def listen(self):
         """
@@ -51,11 +52,14 @@ class UDPDiscover:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, )
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
+        # TODO: just send my ip
         # Send my ip and listen port to other nodes so they can reply
         message = disc_msg.DiscoveryMessage()
         message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
         message.ip_address = self._node_ip
         message.port = self._listen_port
+
+        # TODO: Repeat broadcast on self.timeout
 
         sock.sendto(message.SerializeToString(), ('<broadcast>', port))
         sock.close()
@@ -76,6 +80,7 @@ class UDPDiscover:
             message = disc_msg.DiscoveryMessage()
             message.ParseFromString(in_message)
 
+            # TODO: maintain list of ips instead, don't reply
             # If discovery message, reply with IP and port for TCP connection
             if message.message_type == disc_msg.DiscoveryMessage.DISCOVERY:
 
@@ -94,8 +99,6 @@ class UDPDiscover:
             elif message.message_type == disc_msg.DiscoveryMessage.CONNECT:
                 logging.debug("%s %i received connect message: %s %s", socket.gethostbyname(socket.gethostname()),
                               self._listen_port, str(message.ip_address), str(message.port))
-
-                # TODO: Connect to tcp server
 
             else:
                 logging.error("Invalid message received.")

@@ -83,10 +83,14 @@ class RequestServer(server.TCPRequestHandler):
 
         self.server.miner.receive_block(msg.block, msg.chain_cost)
 
+
 class DiscoveryServer(server.UDPRequestHandler):
 
-    def __init__(self):
+    def __init__(self, request, client_address, serv):
         self.nodes = []
+
+        server.UDPRequestHandler.__init__(self, request, client_address, serv)
+
 
     def receive(self, data):
 
@@ -112,9 +116,9 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        self.udp_server = server.UDPServer(9998, DiscoveryServer)
+        self.udp_server = server.UDPServer(9997, DiscoveryServer)
 
-        self.udp_broadcaster = p2p.UDPBroadcaster(9998, 5)
+        self.udp_broadcaster = p2p.UDPBroadcaster(9997, 5)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -128,6 +132,5 @@ class Node:
         server.start_server(self.input_server)
         server.start_server(self.udp_server)
         p2p.start_discovery(self.udp_broadcaster)
-
 
         self.miner.mine()

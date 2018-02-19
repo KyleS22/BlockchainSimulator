@@ -22,10 +22,11 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
     def send(self, data):
         self.request.sendall(data)
 
-class UDPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+
+class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
     def __init__(self, port, handler):
-        socketserver.UDPServer.__init__(self, ("", port), handler)
+        socketserver.TCPServer.__init__(self, ("", port), handler)
 
 
 class UDPRequestHandler(socketserver.BaseRequestHandler):
@@ -36,10 +37,6 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
 
         logging.debug("received broadcast: %s", self.client_address[0])
 
-        self.receive(data)
-
-    def receive(self, data):
-        pass
 
 def start_server(server):
     """

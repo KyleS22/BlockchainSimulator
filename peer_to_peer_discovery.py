@@ -2,14 +2,13 @@ import socket
 import threading
 import protos.discovery_pb2 as disc_msg
 import logging
-import server
 import time
+
 
 class UDPBroadcaster:
     """
     Broadcasts to all nodes on network and waits for response
     """
-
 
     def __init__(self, port, timeout):
         """
@@ -17,10 +16,8 @@ class UDPBroadcaster:
         :param listen_port: The port to listen for UDP packets on
         :param tcp_port: The port to use to create new TCP connections
         """
-        #self._listen_port = listen_port
         self.timeout = timeout
         self.broadcast_port = port
-        self.nodes = []
 
     def broadcast_thread(self):
         """
@@ -37,11 +34,14 @@ class UDPBroadcaster:
 
         # TODO: Repeat broadcast on self.timeout
 
-        sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
-        logging.debug("Sent broadcast")
-        sock.close()
+        while True:
+            sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
+            logging.debug("Sent broadcast")
+            time.sleep(1)
+
 
 def start_discovery(broadcaster):
+
     thread = threading.Thread(target=broadcaster.broadcast_thread)
     thread.daemon = True
     thread.start()

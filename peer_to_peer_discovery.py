@@ -56,7 +56,6 @@ class UDPDiscover:
 
         sock.sendto(message.SerializeToString(), ('<broadcast>', port))
         sock.close()
-        logging.debug("%s %i sent broadcast", socket.gethostbyname(socket.gethostname()), self._listen_port)
 
     def UDPServer(self):
         """

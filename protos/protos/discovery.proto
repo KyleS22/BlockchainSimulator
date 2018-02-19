@@ -8,5 +8,5 @@ message DiscoveryMessage{
     }
 
     MessageType message_type = 1;
-    bytes node_id = 2;
+    string node_id = 2;
 }

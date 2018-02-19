@@ -10,13 +10,13 @@ class UDPBroadcaster:
     Broadcasts to all nodes on network and waits for response
     """
 
-    def __init__(self, port, timeout, node_id):
+    def __init__(self, port, heartbeat, node_id):
         """
         Constructor for discovery
         :param listen_port: The port to listen for UDP packets on
         :param tcp_port: The port to use to create new TCP connections
         """
-        self.timeout = timeout
+        self.heartbeat = heartbeat
         self.broadcast_port = port
         self.node_id = node_id
 
@@ -38,8 +38,7 @@ class UDPBroadcaster:
         while True:
             sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
             logging.debug("Sent broadcast")
-            time.sleep(self.timeout)
-
+            time.sleep(self.heartbeat)
 
 def start_discovery(broadcaster):
 

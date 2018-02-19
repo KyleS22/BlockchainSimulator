@@ -6,7 +6,7 @@ from servers.discovery_server import DiscoveryServer
 from secrets import token_bytes
 import peer_to_peer_discovery as p2p
 import logging
-
+import random
 
 class Node:
 
@@ -26,7 +26,7 @@ class Node:
         self.input_server.miner = self.miner
 
         self.udp_server = server.UDPServer(10029, DiscoveryServer, self.node_id)
-        self.udp_broadcaster = p2p.UDPBroadcaster(10029, 5, self.node_id)
+        self.udp_broadcaster = p2p.UDPBroadcaster(10029, random.randint(5, 10), self.node_id)
 
     def block_mined(self, block, chain_cost):
         pass

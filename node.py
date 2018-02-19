@@ -2,6 +2,8 @@ from miner import Miner
 from servers import server
 from servers.data_server import DataServer
 from servers.request_server import RequestServer
+from servers.discovery_server import DiscoveryServer
+import peer_to_peer_discovery as p2p
 import logging
 
 
@@ -20,8 +22,8 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        # self.udp_server = server.UDPServer(10028, DiscoveryServer)
-        # self.udp_broadcaster = p2p.UDPBroadcaster(10028, 5)
+        self.udp_server = server.UDPServer(10029, DiscoveryServer)
+        self.udp_broadcaster = p2p.UDPBroadcaster(10029, 5)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -35,7 +37,7 @@ class Node:
 
         server.start_server(self.request_server)
         server.start_server(self.input_server)
-        # server.start_server(self.udp_server)
-        # p2p.start_discovery(self.udp_broadcaster)
+        server.start_server(self.udp_server)
+        p2p.start_discovery(self.udp_broadcaster)
 
         self.miner.mine()

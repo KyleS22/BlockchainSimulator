@@ -38,7 +38,7 @@ class UDPBroadcaster:
         while True:
             sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
             logging.debug("Sent broadcast")
-            time.sleep(1)
+            time.sleep(self.timeout)
 
 
 def start_discovery(broadcaster):

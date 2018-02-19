@@ -37,7 +37,7 @@ class Node:
 
         while True:
             time.sleep(interval)
-            
+
             for node, stamp in self.udp_server.neighbour_list:
                 if time.time() - stamp > threshold:
                     self.udp_server.neighbour_list.remove((node, stamp))
@@ -56,6 +56,8 @@ class Node:
         server.start_server(self.input_server)
         server.start_server(self.udp_server)
         p2p.start_discovery(self.udp_broadcaster)
-        reaper = threading.Thread(target=self.check_dead_nodes, args=(30, 1,))
+        reaper = threading.Thread(target=self.check_dead_nodes, args=(30, 20,))
+        reaper.daemon = True
+        reaper.start()
 
         self.miner.mine()

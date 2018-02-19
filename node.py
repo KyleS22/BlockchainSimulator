@@ -7,6 +7,8 @@ from secrets import token_bytes
 import peer_to_peer_discovery as p2p
 import logging
 import random
+import time
+import threading
 
 class Node:
 
@@ -31,6 +33,18 @@ class Node:
     def block_mined(self, block, chain_cost):
         pass
 
+    def check_dead_nodes(self, interval, threshold):
+
+        while True:
+            time.sleep(interval)
+            
+            for node, stamp in self.udp_server.neighbour_list:
+                if time.time() - stamp > threshold:
+                    self.udp_server.neighbour_list.remove((node, stamp))
+                    logging.debug("Node %s is dead", node)
+
+
+
     def run(self):
         """
         Run the servers for receiving incoming requests and start mining.
@@ -42,5 +56,6 @@ class Node:
         server.start_server(self.input_server)
         server.start_server(self.udp_server)
         p2p.start_discovery(self.udp_broadcaster)
+        reaper = threading.Thread(target=self.check_dead_nodes, args=(30, 1,))
 
         self.miner.mine()

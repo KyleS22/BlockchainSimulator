@@ -27,6 +27,7 @@ class DiscoveryServer(server.UDPRequestHandler):
                 for node, stamp in self.server.neighbour_list:
                     if node == self.client_address[0]:
                         self.server.neighbour_list[i] = (self.client_address[0], timestamp)
+                        logging.debug("Updated timestamp for %s", self.client_address[0])
                     i += 1
 
             # This is a new entry

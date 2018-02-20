@@ -1,7 +1,10 @@
 from servers import server
+from protos import request_pb2
+from google.protobuf import message
 import logging
-import protos.discovery_pb2 as disc_msg
 import time
+
+
 class DiscoveryServer(server.UDPRequestHandler):
 
     def __init__(self, request, client_address, serv):
@@ -12,13 +15,21 @@ class DiscoveryServer(server.UDPRequestHandler):
     def receive(self, data):
 
         logging.debug("Got broadcast message")
-        message = disc_msg.DiscoveryMessage()
-        message.ParseFromString(data)
+
+        req = request_pb2.Request()
+        try:
+            req.ParseFromString(data)
+        except message.DecodeError:
+            logging.error("Discovery error decoding request: %s", data)
+            return
+
+        msg = request_pb2.DiscoveryMessage()
+        msg.ParseFromString(req.request_message)
         timestamp = time.time()
         # TODO: Catch message parse errors
 
         # If the message didn't come from me
-        if message.node_id != self.server.node_id: #and self.client_address[0] not in [node[0] for node in self.server.neighbour_list]:
+        if msg.node_id != self.server.node_id: #and self.client_address[0] not in [node[0] for node in self.server.neighbour_list]:
 
             # If we have already heard from this node...
             if self.client_address[0] in [node[0] for node in self.server.neighbour_list]:

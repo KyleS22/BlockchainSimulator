@@ -1,7 +1,6 @@
 import socketserver
 import threading
 import logging
-import protos.discovery_pb2 as disc_msg
 
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):

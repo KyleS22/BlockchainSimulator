@@ -1,11 +1,11 @@
 import socket
 import threading
-import protos.discovery_pb2 as disc_msg
+from protos import request_pb2
 import logging
 import time
 
 
-class UDPBroadcaster:
+class Heartbeat:
     """
     Broadcasts to all nodes on network and waits for response
     """
@@ -28,21 +28,22 @@ class UDPBroadcaster:
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        # Send a message
-        message = disc_msg.DiscoveryMessage()
-        message.message_type = disc_msg.DiscoveryMessage.DISCOVERY
-        message.node_id = self.node_id
+        msg = request_pb2.DiscoveryMessage()
+        msg.node_id = self.node_id
+
+        req = request_pb2.Request()
+        req.request_type = request_pb2.DISOVERY
+        req.request_message = msg.SerializeToString()
+        data = req.SerializeToString()
 
         while True:
-            sock.sendto(message.SerializeToString(), ('255.255.255.255', self.broadcast_port))
-            logging.debug("Sent broadcast")
+            sock.sendto(data, ('255.255.255.255', self.broadcast_port))
+            logging.debug("Sent heartbeat")
             time.sleep(self.heartbeat)
 
-def start_discovery(broadcaster):
-
-    thread = threading.Thread(target=broadcaster.broadcast_thread)
-    thread.daemon = True
-    thread.start()
-
+    def start(self):
+        thread = threading.Thread(target=self.broadcast_thread)
+        thread.daemon = True
+        thread.start()

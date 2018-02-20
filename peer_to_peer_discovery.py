@@ -44,6 +44,9 @@ class Heartbeat:
             time.sleep(self.heartbeat)
 
     def start(self):
+        """
+         Start the discovery heartbeat in a new thread.
+         """
         thread = threading.Thread(target=self.broadcast_thread)
         thread.daemon = True
         thread.start()

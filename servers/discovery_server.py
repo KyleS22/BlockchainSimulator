@@ -6,6 +6,9 @@ import time
 
 
 class DiscoveryServer(server.UDPRequestHandler):
+    """
+    A server for receiving UDP broadcast messages from other nodes to connect with.
+    """
 
     def __init__(self, request, client_address, serv):
         self.nodes = []
@@ -13,6 +16,11 @@ class DiscoveryServer(server.UDPRequestHandler):
         server.UDPRequestHandler.__init__(self, request, client_address, serv)
 
     def receive(self, data):
+        """
+        Called by the server when a new message is received
+        :param data: The data received
+        :return: None
+        """
 
         logging.debug("Got broadcast message")
 
@@ -25,6 +33,7 @@ class DiscoveryServer(server.UDPRequestHandler):
 
         msg = request_pb2.DiscoveryMessage()
         msg.ParseFromString(req.request_message)
+
         timestamp = time.time()
         # TODO: Catch message parse errors
 

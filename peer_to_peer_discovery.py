@@ -40,8 +40,13 @@ class UDPBroadcaster:
             logging.debug("Sent broadcast")
             time.sleep(self.heartbeat)
 
-def start_discovery(broadcaster):
 
+def start_discovery(broadcaster):
+    """
+    Start the discovery broadcaster in a new thread.
+    :param broadcaster: The boradcaster to start
+    :return: None
+    """
     thread = threading.Thread(target=broadcaster.broadcast_thread)
     thread.daemon = True
     thread.start()

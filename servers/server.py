@@ -25,18 +25,30 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
 
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
+    """
+    A UDP server...
+    """
 
     def __init__(self, port, handler, node_id=None):
         socketserver.UDPServer.allow_reuse_address = True
 
+        # A list of (IP, timestamp) tuples representing the nodes and the last broadcast received
         self.neighbour_list = []
-        self.node_id = node_id
+
+        self.node_id = node_id  # This node's unique ID
         socketserver.UDPServer.__init__(self, ("", port), handler)
 
 
 class UDPRequestHandler(socketserver.BaseRequestHandler):
+    """
+    Request handler for the UDP server.
+    """
 
     def handle(self):
+        """
+        Called by the server to receive new data
+        :return: None
+        """
         data = self.request[0].strip()
         socket = self.request[1]
 
@@ -44,6 +56,11 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         self.receive(data)
 
     def receive(self, data):
+        """
+        Process the new data.  Implement this when subclassing this class
+        :param data: The data received
+        :return: None
+        """
         pass
 
 

@@ -16,7 +16,7 @@ class Node:
         """
         Initialize the servers and miner required for a peer to peer node to operate.
         """
-        self.node_id = str(token_bytes(16))
+        self.node_id = str(token_bytes(16)) # Create a unique ID for this node
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
@@ -34,6 +34,13 @@ class Node:
         pass
 
     def check_dead_nodes(self, interval, threshold):
+        """
+        Loops through the list of (IP, timestamp) tuples to see if any of those nodes are
+         not sending broadcasts anymore.
+        :param interval: How often to check for dead nodes
+        :param threshold: The amount of time between broadcasts before a node is declared dead
+        :return: None
+        """
 
         while True:
             time.sleep(interval)

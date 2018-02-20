@@ -2,7 +2,12 @@ from servers import server
 import logging
 import protos.discovery_pb2 as disc_msg
 import time
+
+
 class DiscoveryServer(server.UDPRequestHandler):
+    """
+    A server for receiving UDP broadcast messages from other nodes to connect with.
+    """
 
     def __init__(self, request, client_address, serv):
         self.nodes = []
@@ -10,8 +15,15 @@ class DiscoveryServer(server.UDPRequestHandler):
         server.UDPRequestHandler.__init__(self, request, client_address, serv)
 
     def receive(self, data):
+        """
+        Called by the server when a new message is received
+        :param data: The data received
+        :return: None
+        """
 
         logging.debug("Got broadcast message")
+
+        # Try to parse the message as a discovery message
         message = disc_msg.DiscoveryMessage()
         message.ParseFromString(data)
         timestamp = time.time()

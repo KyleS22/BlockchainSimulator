@@ -31,9 +31,6 @@ class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     def __init__(self, port, handler, node_id=None):
         socketserver.UDPServer.allow_reuse_address = True
 
-        # A list of (IP, timestamp) tuples representing the nodes and the last broadcast received
-        self.neighbour_list = []
-
         self.node_id = node_id  # This node's unique ID
         socketserver.UDPServer.__init__(self, ("", port), handler)
 

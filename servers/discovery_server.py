@@ -3,6 +3,7 @@ from protos import request_pb2
 from google.protobuf import message
 import logging
 import time
+from node_pool import NodePool
 
 
 class DiscoveryServer(server.UDPRequestHandler):
@@ -41,18 +42,18 @@ class DiscoveryServer(server.UDPRequestHandler):
         if msg.node_id != self.server.node_id: #and self.client_address[0] not in [node[0] for node in self.server.neighbour_list]:
 
             # If we have already heard from this node...
-            if self.client_address[0] in [node[0] for node in self.server.neighbour_list]:
+            if self.client_address[0] in [node[0] for node in self.NodePool.neighbour_list]:
                 i = 0
                 # Update the timestamp if the entry exists
-                for node, stamp in self.server.neighbour_list:
+                for node, stamp in self.NodePool.neighbour_list:
                     if node == self.client_address[0]:
-                        self.server.neighbour_list[i] = (self.client_address[0], timestamp)
+                        self.NodePool.neighbour_list[i] = (self.client_address[0], timestamp)
                         logging.debug("Updated timestamp for %s", self.client_address[0])
                     i += 1
 
             # This is a new entry
             else:
-                self.server.neighbour_list.append((self.client_address[0], timestamp))
+                self.NodePool.neighbour_list.append((self.client_address[0], timestamp))
                 logging.debug("Received new ip %s", str(self.client_address[0]))
-                logging.debug(self.server.neighbour_list)
+                logging.debug(self.NodePool.neighbour_list)
 

@@ -1,5 +1,13 @@
+import threading
+import time
+import logging
 
 class NodePool:
+
+	def __init__(self):
+		# A list of (IP, timestamp) tuples representing the nodes 
+		# and the last broadcast received
+		self.neightbour_list = []
 	
 	def check_dead_nodes(self, interval, threshold):
 	"""
@@ -9,7 +17,6 @@ class NodePool:
 	:param threshold: The amount of time between broadcasts before a node is declared dead
 	:return: None
 	"""
-
 	while True:
 		time.sleep(interval)
 
@@ -18,4 +25,7 @@ class NodePool:
 				self.udp_server.neighbour_list.remove((node, stamp))
 				logging.debug("Node %s is dead", node)
 				
-	
+	def start(self):
+		reaper = threading.Thread(target=self.check_dead_nodes, args=(30, 20,))
+        reaper.daemon = True
+        reaper.start()

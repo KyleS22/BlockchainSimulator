@@ -20,6 +20,8 @@ class Node:
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
+		
+		self.node_pool = NodePool()		
 
         self.request_server = server.TCPServer(10000, RequestServer)
         self.request_server.miner = self.miner
@@ -33,23 +35,6 @@ class Node:
     def block_mined(self, block, chain_cost):
         pass
 
-    def check_dead_nodes(self, interval, threshold):
-        """
-        Loops through the list of (IP, timestamp) tuples to see if any of those nodes are
-         not sending broadcasts anymore.
-        :param interval: How often to check for dead nodes
-        :param threshold: The amount of time between broadcasts before a node is declared dead
-        :return: None
-        """
-
-        while True:
-            time.sleep(interval)
-
-            for node, stamp in self.udp_server.neighbour_list:
-                if time.time() - stamp > threshold:
-                    self.udp_server.neighbour_list.remove((node, stamp))
-                    logging.debug("Node %s is dead", node)
-
     def run(self):
         """
         Run the servers for receiving incoming requests and start mining.
@@ -61,9 +46,6 @@ class Node:
         server.start_server(self.input_server)
         server.start_server(self.udp_server)
 
-        reaper = threading.Thread(target=self.check_dead_nodes, args=(30, 20,))
-        reaper.daemon = True
-        reaper.start()
-
         self.heartbeat.start()
         self.miner.mine()
+		self.node_pool.start()

@@ -5,10 +5,9 @@ from servers.request_server import RequestServer
 from servers.discovery_server import DiscoveryServer
 from secrets import randbits
 import peer_to_peer_discovery as p2p
+from node_pool import NodePool
 import logging
-import random
-import time
-import threading
+
 
 class Node:
 
@@ -17,11 +16,10 @@ class Node:
         Initialize the servers and miner required for a peer to peer node to operate.
         """
         self.node_id = randbits(32) # Create a unique ID for this node
+        self.node_pool = NodePool()
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
-		
-		self.node_pool = NodePool()		
 
         self.request_server = server.TCPServer(10000, RequestServer)
         self.request_server.miner = self.miner
@@ -29,8 +27,10 @@ class Node:
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
 
-        self.udp_server = server.UDPServer(10029, DiscoveryServer, self.node_id)
-        self.heartbeat = p2p.Heartbeat(10029, 30, self.node_id)
+        self.udp_server = server.UDPServer(10036, DiscoveryServer, self.node_id)
+        self.udp_server.node_pool = self.node_pool
+
+        self.heartbeat = p2p.Heartbeat(10036, 30, self.node_id)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -46,6 +46,6 @@ class Node:
         server.start_server(self.input_server)
         server.start_server(self.udp_server)
 
+        self.node_pool.start()
         self.heartbeat.start()
         self.miner.mine()
-		self.node_pool.start()

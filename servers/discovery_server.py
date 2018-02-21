@@ -36,24 +36,25 @@ class DiscoveryServer(server.UDPRequestHandler):
         msg.ParseFromString(req.request_message)
 
         timestamp = time.time()
+
         # TODO: Catch message parse errors
 
         # If the message didn't come from me
-        if msg.node_id != self.server.node_id: #and self.client_address[0] not in [node[0] for node in self.server.neighbour_list]:
+        if msg.node_id != self.server.node_id:
 
             # If we have already heard from this node...
-            if self.client_address[0] in [node[0] for node in self.NodePool.neighbour_list]:
+            if self.client_address[0] in [node[0] for node in self.server.node_pool.neighbour_list]:
                 i = 0
                 # Update the timestamp if the entry exists
-                for node, stamp in self.NodePool.neighbour_list:
+                for node, stamp in self.server.node_pool.neighbour_list:
                     if node == self.client_address[0]:
-                        self.NodePool.neighbour_list[i] = (self.client_address[0], timestamp)
+                        self.server.node_pool.neighbour_list[i] = (self.client_address[0], timestamp)
                         logging.debug("Updated timestamp for %s", self.client_address[0])
                     i += 1
 
             # This is a new entry
             else:
-                self.NodePool.neighbour_list.append((self.client_address[0], timestamp))
+                self.server.node_pool.neighbour_list.append((self.client_address[0], timestamp))
                 logging.debug("Received new ip %s", str(self.client_address[0]))
-                logging.debug(self.NodePool.neighbour_list)
+                logging.debug(self.server.node_pool.neighbour_list)
 

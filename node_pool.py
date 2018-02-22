@@ -1,13 +1,15 @@
 import threading
 import time
 import logging
+import socket
 
 
 class NodePool:
 
     def multicast(self, data, port):
-        logging.debug("multicast")
-        pass
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        for node in self.pool.keys():
+            sock.sendto(data, (node[1], port))
 
     def __init__(self, node_id, cleanup_interval, timeout):
         """

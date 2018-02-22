@@ -21,9 +21,4 @@ class DataServer(server.TCPRequestHandler):
 
         msg = message.SerializeToString()
         logging.debug("Received data: (%f, %s) = %s", message.timestamp, message.blob, msg)
-
-        if self.server.miner.add(msg):
-            req = request_pb2.Request()
-            req.request_type = request_pb2.BLOB
-            req.request_message = msg
-            self.server.nodepool.multicast(req.SerializeToString(), 10000)
+        self.server.node.handle_blob(msg, self)

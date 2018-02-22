@@ -14,6 +14,8 @@ import logging
 
 class Node:
 
+    REQUEST_PORT = 10000
+
     def __init__(self):
         """
         Initialize the servers and miner required for a peer to peer node to operate.
@@ -23,22 +25,21 @@ class Node:
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
-        self.heartbeat = p2p.Heartbeat(10000, 30, node_id)
+        self.heartbeat = p2p.Heartbeat(Node.REQUEST_PORT, 30, node_id)
 
         router = RequestRouter(self)
         router.handlers[request_pb2.BLOB] = self.handle_blob
         router.handlers[request_pb2.DISOVERY] = self.handle_discovery
         router.handlers[request_pb2.MINED_BLOCK] = self.handle_mined_block
 
-        self.tcp_router = server.TCPServer(10000, TCPRouter)
+        self.tcp_router = server.TCPServer(Node.REQUEST_PORT, TCPRouter)
         self.tcp_router.router = router
 
-        self.udp_router = server.UDPServer(10000, UDPRouter)
+        self.udp_router = server.UDPServer(Node.REQUEST_PORT, UDPRouter)
         self.udp_router.router = router
 
         self.input_server = server.TCPServer(9999, DataServer)
-        self.input_server.nodepool = self.node_pool
-        self.input_server.miner = self.miner
+        self.input_server.node = self
 
     def block_mined(self, block, chain_cost):
         pass
@@ -68,7 +69,14 @@ class Node:
         self.udp_router.server_close()
 
     def handle_blob(self, data, handler):
-        pass
+        if self.miner.add(data):
+            logging.debug("forward blob to peers")
+            req = request_pb2.Request()
+            req.request_type = request_pb2.BLOB
+            req.request_message = data
+            self.node_pool.multicast(req.SerializeToString(), Node.REQUEST_PORT)
+        else:
+            logging.debug("received duplicate blob")
 
     def handle_discovery(self, data, handler):
         msg = request_pb2.DiscoveryMessage()

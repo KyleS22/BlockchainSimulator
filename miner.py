@@ -24,6 +24,14 @@ class Miner:
         self.chain_lock = threading.Lock()
 
         self.chain = Chain()
+
+        # The list of higher cost chains that need to be resolved to catch up the node
+        # All floating chains must be the same cost but there may be multiple due to ties
+        self.floating_chains = []
+
+        # The highest cost floating chain that is currently being resolved
+        self.resolution_chain = None
+
         self.mine_event = []
 
         # If the block chain has been modified since mining started
@@ -61,30 +69,27 @@ class Miner:
             self.pending_blobs.add(msg)
         return True
 
-    def receive_block(self, block_data, chain_cost):
+    def receive_block(self, block, chain_cost):
         """
         Receive a block that was mined from a peer node in the network.
-        :param block_data: The block that was mined.
+        :param block: The block that was mined.
         :param chain_cost: The total cost of the chain that the peer node is working on.
         """
         with self.chain_lock:
             cur = self.chain.blocks[-1]
             if chain_cost > self.chain.get_cost():
-                block = Block.decode(cur.hash(), block_data)
-                if block.is_valid():
-                    logging.debug("ADDED VALID REMOTE BLOCK!!!")
-                    self.chain.add(block)
-                    self.dirty = True
-                else:
-                    logging.debug("Found a larger chain, todo fetch it")
-            elif chain_cost < self.chain.get_cost():
-                logging.debug("Found a smaller chain, todo tell it its too short")
-            else:
-                block = Block.decode(b'', block_data)
-                if block == cur:
-                    logging.debug('received a duplicate block')
-                else:
-                    logging.debug('received a block thats the same length, tie breaker stuff')
+                if not block.is_valid(cur.hash()):
+                    return False
+
+                logging.debug("ADDED VALID REMOTE BLOCK!!!")
+                block.set_previous_hash(cur.hash())
+                self.chain.add(block)
+                self.dirty = True
+
+            elif chain_cost == self.chain.get_cost() and block != cur:
+                logging.debug('received a block thats the same length, tie breaker stuff')
+
+            return True
 
     def ___add_block(self, block):
         """

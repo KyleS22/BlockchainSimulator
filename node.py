@@ -9,6 +9,7 @@ from secrets import randbits
 import peer_to_peer_discovery as p2p
 from node_pool import NodePool
 from requests import RequestRouter
+from block import Block
 import logging
 
 
@@ -102,8 +103,9 @@ class Node:
         msg = request_pb2.MinedBlockMessage()
         try:
             msg.ParseFromString(data)
+            block = Block.decode(msg.block)
         except message.DecodeError:
             logging.error("Error decoding message: %s", data)
             return
 
-        self.miner.receive_block(msg.block, msg.chain_cost)
+        self.miner.receive_block(block, msg.chain_cost)

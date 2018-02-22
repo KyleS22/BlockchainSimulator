@@ -47,7 +47,7 @@ class NodePool:
 
             cur = time.time()
             with self.pool_lock:
-                for key, prev in self.pool.items():
+                for key, prev in list(self.pool.items()):
                     if cur - prev > self.timeout:
                         logging.debug("cleanup node: %s", key)
                         self.pool.pop(key)

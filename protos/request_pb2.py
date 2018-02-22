@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x14protos/request.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\"6\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\r\n\x05\x62lock\x18\x02 \x01(\x0c\"#\n\x10\x44iscoveryMessage\x12\x0f\n\x07node_id\x18\x01 \x01(\x07*A\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x12\x0c\n\x08\x44ISOVERY\x10\x03\x62\x06proto3')
+  serialized_pb=_b('\n\x14protos/request.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\"6\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\r\n\x05\x62lock\x18\x02 \x01(\x0c\"#\n\x10\x44iscoveryMessage\x12\x0f\n\x07node_id\x18\x01 \x01(\x07*Q\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x12\x0c\n\x08\x44ISOVERY\x10\x03\x12\x0e\n\nRESOLUTION\x10\x04\x62\x06proto3')
 )
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
@@ -45,11 +45,15 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
       name='DISOVERY', index=3, number=3,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RESOLUTION', index=4, number=4,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
   serialized_start=237,
-  serialized_end=302,
+  serialized_end=318,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPE)
 
@@ -58,6 +62,7 @@ BLOB = 0
 ALIVE = 1
 MINED_BLOCK = 2
 DISOVERY = 3
+RESOLUTION = 4
 
 
 

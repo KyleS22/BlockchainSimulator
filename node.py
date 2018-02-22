@@ -1,11 +1,14 @@
 from miner import Miner
 from servers import server
 from servers.data_server import DataServer
-from servers.request_server import RequestServer
-from servers.discovery_server import DiscoveryServer
+from servers.tcp_router import TCPRouter
+from servers.udp_router import UDPRouter
+from protos import request_pb2
+from google.protobuf import message
 from secrets import randbits
 import peer_to_peer_discovery as p2p
 from node_pool import NodePool
+from requests import RequestRouter
 import logging
 
 
@@ -20,17 +23,21 @@ class Node:
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
+        self.heartbeat = p2p.Heartbeat(10000, 30, node_id)
 
-        self.request_server = server.TCPServer(10000, RequestServer)
-        self.request_server.miner = self.miner
+        router = RequestRouter(self)
+        router.handlers[request_pb2.BLOB] = self.handle_blob
+        router.handlers[request_pb2.DISOVERY] = self.handle_discovery
+        router.handlers[request_pb2.MINED_BLOCK] = self.handle_mined_block
+
+        self.tcp_router = server.TCPServer(10000, TCPRouter)
+        self.tcp_router.router = router
+
+        self.udp_router = server.UDPServer(10000, UDPRouter)
+        self.udp_router.router = router
 
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.miner = self.miner
-
-        self.udp_server = server.UDPServer(10038, DiscoveryServer)
-        self.udp_server.node_pool = self.node_pool
-
-        self.heartbeat = p2p.Heartbeat(10038, 30, node_id)
 
     def block_mined(self, block, chain_cost):
         pass
@@ -42,9 +49,43 @@ class Node:
         """
         self.node_pool.start()
 
-        server.start_server(self.request_server)
+        server.start_server(self.tcp_router)
         server.start_server(self.input_server)
-        server.start_server(self.udp_server)
+        server.start_server(self.udp_router)
 
         self.heartbeat.start()
         self.miner.mine()
+
+    def shutdown(self):
+        self.tcp_router.shutdown()
+        self.tcp_router.server_close()
+
+        self.input_server.shutdown()
+        self.input_server.server_close()
+
+        self.udp_router.shutdown()
+        self.udp_router.server_close()
+
+    def handle_blob(self, data, handler):
+        pass
+
+    def handle_discovery(self, data, handler):
+        msg = request_pb2.DiscoveryMessage()
+        try:
+            msg.ParseFromString(data)
+        except message.DecodeError:
+            logging.error("Error decoding message: %s", data)
+            return
+
+        self.node_pool.add(msg.node_id, handler.client_address[0])
+
+    def handle_mined_block(self, data, handler):
+
+        msg = request_pb2.MinedBlockMessage()
+        try:
+            msg.ParseFromString(data)
+        except message.DecodeError:
+            logging.error("Error decoding message: %s", data)
+            return
+
+        self.miner.receive_block(msg.block, msg.chain_cost)

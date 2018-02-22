@@ -3,16 +3,12 @@ from google.protobuf import message
 import logging
 
 
-class RequestParser:
+class RequestRouter:
 
     def __init__(self, handler):
-        self.request_handlers = {
-            request_pb2.BLOB: handler.handle_blob,
-            request_pb2.ALIVE: handler.handle_alive,
-            request_pb2.MINED_BLOCK: handler.handle_mined_block
-        }
+        self.handlers = {}
 
-    def parse(self, data):
+    def parse(self, data, handler):
         # Try to parse the Request using the protocol buffer
         req = request_pb2.Request()
         try:
@@ -22,7 +18,7 @@ class RequestParser:
             return
 
         # Call the corresponding request handler
-        if req.request_type in self.request_handlers:
-            self.request_handlers[req.request_type](req.request_message)
+        if req.request_type in self.handlers:
+            self.handlers[req.request_type](req.request_message, handler)
         else:
             logging.error("Unsupported request type: %s", req.request_type)

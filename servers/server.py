@@ -30,8 +30,6 @@ class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
     def __init__(self, port, handler, node_id=None):
         socketserver.UDPServer.allow_reuse_address = True
-
-        self.node_id = node_id  # This node's unique ID
         socketserver.UDPServer.__init__(self, ("", port), handler)
 
 
@@ -45,10 +43,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         Called by the server to receive new data
         :return: None
         """
-        data = self.request[0].strip()
-        socket = self.request[1]
-
-        logging.debug("received broadcast: %s", self.client_address[0])
+        data = self.request[0]
         self.receive(data)
 
     def receive(self, data):

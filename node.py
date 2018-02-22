@@ -37,6 +37,7 @@ class Node:
         self.udp_router.router = router
 
         self.input_server = server.TCPServer(9999, DataServer)
+        self.input_server.nodepool = self.node_pool
         self.input_server.miner = self.miner
 
     def block_mined(self, block, chain_cost):

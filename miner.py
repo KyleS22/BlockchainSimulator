@@ -55,7 +55,10 @@ class Miner:
         :param msg: The Blob Message as a BlobMessage protocol buffer object.
         """
         with self.pending_blobs_lock:
+            if msg in self.pending_blobs:
+                return False
             self.pending_blobs.add(msg)
+        return True
 
     def receive_block(self, block, chain_cost):
         """

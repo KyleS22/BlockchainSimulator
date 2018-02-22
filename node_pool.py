@@ -4,6 +4,11 @@ import logging
 
 
 class NodePool:
+
+    def multicast(self, data, port):
+        logging.debug("multicast")
+        pass
+
     def __init__(self, node_id, cleanup_interval, timeout):
         """
         Create a new node pool for tracking other nodes in the network

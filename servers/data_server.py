@@ -15,12 +15,15 @@ class DataServer(server.TCPRequestHandler):
         Receive binary data from an incoming TCP request that should be added to the block chain.
         :param data: The binary data to be added to the block chain.
         """
-        request = request_pb2.BlobMessage()
-        request.timestamp = time.time()
-        request.blob = data
+        message = request_pb2.BlobMessage()
+        message.timestamp = time.time()
+        message.blob = data
 
-        msg = request.SerializeToString()
-        logging.debug("Received data: (%f, %s) = %s", request.timestamp, request.blob, msg)
-        self.server.miner.add(msg)
+        msg = message.SerializeToString()
+        logging.debug("Received data: (%f, %s) = %s", message.timestamp, message.blob, msg)
 
-        # TODO forward msg to peers
+        if self.server.miner.add(msg):
+            req = request_pb2.Request()
+            req.request_type = request_pb2.BLOB
+            req.request_message = msg
+            self.server.nodepool.multicast(req.SerializeToString(), 10000)

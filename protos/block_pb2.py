@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/block.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x12protos/block.proto\"X\n\x0b\x42lockHeader\x12\x0f\n\x07\x65ntropy\x18\x01 \x01(\x07\x12\x11\n\ttimestamp\x18\x02 \x01(\x01\x12\x12\n\ndifficulty\x18\x03 \x01(\x07\x12\x11\n\tbody_hash\x18\x04 \x01(\x0c\"\x1a\n\tBlockBody\x12\r\n\x05\x62lobs\x18\x01 \x03(\x0c\"N\n\x05\x42lock\x12\r\n\x05nonce\x18\x01 \x01(\x07\x12\x1c\n\x06header\x18\x02 \x01(\x0b\x32\x0c.BlockHeader\x12\x18\n\x04\x62ody\x18\x03 \x01(\x0b\x32\n.BlockBodyb\x06proto3')
+  serialized_pb=_b('\n\x12protos/block.proto\"X\n\x0b\x42lockHeader\x12\x0f\n\x07\x65ntropy\x18\x01 \x01(\x07\x12\x11\n\ttimestamp\x18\x02 \x01(\x01\x12\x12\n\ndifficulty\x18\x03 \x01(\x07\x12\x11\n\tbody_hash\x18\x04 \x01(\x0c\"\x1a\n\tBlockBody\x12\r\n\x05\x62lobs\x18\x01 \x03(\x0c\"a\n\x05\x42lock\x12\r\n\x05nonce\x18\x01 \x01(\x07\x12\x11\n\tprev_hash\x18\x02 \x01(\x0c\x12\x1c\n\x06header\x18\x03 \x01(\x0b\x32\x0c.BlockHeader\x12\x18\n\x04\x62ody\x18\x04 \x01(\x0b\x32\n.BlockBodyb\x06proto3')
 )
 
 
@@ -123,15 +123,22 @@ _BLOCK = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='header', full_name='Block.header', index=1,
-      number=2, type=11, cpp_type=10, label=1,
+      name='prev_hash', full_name='Block.prev_hash', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='header', full_name='Block.header', index=2,
+      number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='body', full_name='Block.body', index=2,
-      number=3, type=11, cpp_type=10, label=1,
+      name='body', full_name='Block.body', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -149,7 +156,7 @@ _BLOCK = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=140,
-  serialized_end=218,
+  serialized_end=237,
 )
 
 _BLOCK.fields_by_name['header'].message_type = _BLOCKHEADER

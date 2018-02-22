@@ -13,6 +13,7 @@ message BlockBody {
 
 message Block {
     fixed32 nonce = 1;
-    BlockHeader header = 2;
-    BlockBody body = 3;
+    bytes prev_hash = 2;
+    BlockHeader header = 3;
+    BlockBody body = 4;
 }

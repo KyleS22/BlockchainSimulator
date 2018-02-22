@@ -5,6 +5,7 @@ enum RequestType {
 	ALIVE = 1;
 	MINED_BLOCK = 2;
 	DISOVERY = 3;
+	RESOLUTION = 4;
 }
 
 message Request {

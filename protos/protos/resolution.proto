@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+import "protos/block.proto";
+
+message ResolutionResponse {
+    repeated Block blocks = 1;
+}

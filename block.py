@@ -170,13 +170,18 @@ class Block:
         """
         self.nonce += 1
 
-    def encode(self):
-
+    def encode(self, include_body=True):
+        """
+        Encode the block into a binary representation that can be sent across the network
+        :param include_body: Indicate whether to encode the data in the block's body
+        :return: The binary encoded block
+        """
         block = block_pb2.Block()
         block.nonce = self.nonce
         block.prev_hash = self.prev_hash
         block.header.CopyFrom(self.header)
-        block.body.CopyFrom(self.body)
+        if include_body:
+            block.body.CopyFrom(self.body)
         return block.SerializeToString()
 
     def is_valid(self, prev_hash=None):

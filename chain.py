@@ -2,7 +2,7 @@ import logging
 import util
 from block import BlockBuilder, Block
 from collections import defaultdict
-from protos import request_pb2
+from protos import request_pb2, chain_pb2
 
 
 class Chain:
@@ -69,3 +69,14 @@ class Chain:
             if cur.prev_hash != prev.hash() or not cur.is_valid():
                 return False
         return True
+
+    def encode(self, include_body=True):
+        """
+       Encode the chain into a binary representation that can be sent across the network
+       :param include_body: Indicate whether to encode the data in the blocks' bodies
+       :return: The binary encoded chain
+       """
+        chain = chain_pb2.Chain()
+        for block in self.blocks:
+            chain.blocks.append(block.encode(include_body))
+        return chain.SerializeToString()

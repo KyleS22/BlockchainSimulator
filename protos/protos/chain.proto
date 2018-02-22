@@ -2,6 +2,6 @@ syntax = "proto3";
 
 import "protos/block.proto";
 
-message ResolutionResponse {
+message Chain {
     repeated Block blocks = 1;
 }

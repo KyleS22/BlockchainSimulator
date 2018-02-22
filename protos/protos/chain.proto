@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "protos/block.proto";
-
 message Chain {
-    repeated Block blocks = 1;
+    repeated bytes blocks = 1;
 }

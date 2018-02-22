@@ -13,16 +13,14 @@ from google.protobuf import descriptor_pb2
 _sym_db = _symbol_database.Default()
 
 
-from protos import block_pb2 as protos_dot_block__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/chain.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x12protos/chain.proto\x1a\x12protos/block.proto\"\x1f\n\x05\x43hain\x12\x16\n\x06\x62locks\x18\x01 \x03(\x0b\x32\x06.Blockb\x06proto3')
-  ,
-  dependencies=[protos_dot_block__pb2.DESCRIPTOR,])
+  serialized_pb=_b('\n\x12protos/chain.proto\"\x17\n\x05\x43hain\x12\x0e\n\x06\x62locks\x18\x01 \x03(\x0c\x62\x06proto3')
+)
 
 
 
@@ -36,7 +34,7 @@ _CHAIN = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='blocks', full_name='Chain.blocks', index=0,
-      number=1, type=11, cpp_type=10, label=3,
+      number=1, type=12, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -53,11 +51,10 @@ _CHAIN = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=42,
-  serialized_end=73,
+  serialized_start=22,
+  serialized_end=45,
 )
 
-_CHAIN.fields_by_name['blocks'].message_type = protos_dot_block__pb2._BLOCK
 DESCRIPTOR.message_types_by_name['Chain'] = _CHAIN
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 

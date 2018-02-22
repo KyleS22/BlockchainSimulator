@@ -142,6 +142,11 @@ class Block:
         self.header.body_hash = sha256(self.body.SerializeToString()).digest()
         self.cur_hash = sha256(self.header.SerializeToString()).digest()
 
+    def __eq__(self, other):
+        if isinstance(self, other.__class__):
+            return self.cur_hash == other.cur_hash and self.nonce == other.nonce
+        return False
+
     def hash(self):
         """
         Compute the SHA256 hash of the block.

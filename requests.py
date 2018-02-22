@@ -21,4 +21,4 @@ class RequestRouter:
         if req.request_type in self.handlers:
             self.handlers[req.request_type](req.request_message, handler)
         else:
-            logging.error("Unsupported request type: %s", req.request_type)
+            logging.error("Unsupported request type: %s", request_pb2.RequestType.Name(req.request_type))

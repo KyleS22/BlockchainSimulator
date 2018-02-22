@@ -42,7 +42,16 @@ class Node:
         self.input_server.node = self
 
     def block_mined(self, block, chain_cost):
-        pass
+
+        msg = request_pb2.MinedBlockMessage()
+        msg.chain_cost = chain_cost
+        msg.block = block.encode()
+
+        req = request_pb2.Request()
+        req.request_type = request_pb2.MINED_BLOCK
+        req.request_message = msg.SerializeToString()
+
+        self.node_pool.multicast(req.SerializeToString(), Node.REQUEST_PORT)
 
     def run(self):
         """

@@ -1,4 +1,5 @@
 from chain import Chain
+from block import Block
 import math
 import time
 import threading
@@ -60,17 +61,30 @@ class Miner:
             self.pending_blobs.add(msg)
         return True
 
-    def receive_block(self, block, chain_cost):
+    def receive_block(self, block_data, chain_cost):
         """
         Receive a block that was mined from a peer node in the network.
-        :param block: The block that was mined.
+        :param block_data: The block that was mined.
         :param chain_cost: The total cost of the chain that the peer node is working on.
         """
         with self.chain_lock:
-            pass
-            # only set dirty if chain is modified
-            # self.dirty = True
-
+            cur = self.chain.blocks[-1]
+            if chain_cost > self.chain.get_cost():
+                block = Block.decode(cur.hash(), block_data)
+                if block.is_valid():
+                    logging.debug("ADDED VALID REMOTE BLOCK!!!")
+                    self.chain.add(block)
+                    self.dirty = True
+                else:
+                    logging.debug("Found a larger chain, todo fetch it")
+            elif chain_cost < self.chain.get_cost():
+                logging.debug("Found a smaller chain, todo tell it its too short")
+            else:
+                block = Block.decode(b'', block_data)
+                if block == cur:
+                    logging.debug('received a duplicate block')
+                else:
+                    logging.debug('received a block thats the same length, tie breaker stuff')
 
     def ___add_block(self, block):
         """

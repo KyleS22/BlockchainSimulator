@@ -87,6 +87,9 @@ class Block:
             requirement.
         """
         return self.nonce
+
+    def set_previous_hash(self, hash):
+        self.prev_hash = hash
     
     @classmethod
     def genesis(cls):
@@ -97,17 +100,16 @@ class Block:
         return cls(b'', cls.GENESIS_DIFFICULTY, block_pb2.BlockBody(), cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
 
     @classmethod
-    def decode(cls, prev_hash, data):
+    def decode(cls, data):
         """
         Decode a block from an encoded Block protocol buffer.
-        :param prev_hash: The hash of the block that the decoded block should attach to in the chain
         :param data: The encoded block.
         :return: The decoded block.
         :except: If decoding fails then a DecodeError is thrown.
         """
         block = block_pb2.Block()
         block.ParseFromString(data)
-        return cls(prev_hash, block.header.difficulty, block.body, block.header.timestamp, block.header.entropy, block.nonce)
+        return cls(block.prev_hash, block.header.difficulty, block.body, block.header.timestamp, block.header.entropy, block.nonce)
 
     @classmethod
     def block(cls, prev_hash, difficulty, body):
@@ -147,14 +149,17 @@ class Block:
             return self.cur_hash == other.cur_hash and self.nonce == other.nonce
         return False
 
-    def hash(self):
+    def hash(self, prev_hash=None):
         """
         Compute the SHA256 hash of the block.
         :return: A 256 bit bytes object containing the SHA256 hash.
         """
         hashcode = sha256()
         hashcode.update(self.cur_hash)
-        hashcode.update(self.prev_hash)
+        if prev_hash is None:
+            hashcode.update(self.prev_hash)
+        else:
+            hashcode.update(prev_hash)
         hashcode.update(str(self.nonce).encode())
         return hashcode.digest()
 
@@ -169,18 +174,20 @@ class Block:
 
         block = block_pb2.Block()
         block.nonce = self.nonce
+        block.prev_hash = self.prev_hash
         block.header.CopyFrom(self.header)
         block.body.CopyFrom(self.body)
         return block.SerializeToString()
 
-    def is_valid(self):
+    def is_valid(self, prev_hash=None):
         """
         Tests whether the block has been mined by computing the SHA256 hash
             and determining if the number of leading 0 bits is greater
             than or equal to the difficulty.
+        :param prev_hash: the hash of the previous block in the chain
         :return: True if a nonce has been found that satisfies the difficulty, otherwise False.
         """
-        hashcode = self.hash()
+        hashcode = self.hash(prev_hash)
         for i in range(0, self.header.difficulty):
             byte = hashcode[i // 8]
             # 0x80 = 1000 0000 to test each bit in an individual byte by bit shifting

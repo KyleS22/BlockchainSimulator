@@ -8,7 +8,6 @@ class TCPRouter(server.TCPRequestHandler):
     """
 
     def __init__(self, request, client_address, serv):
-        self.parser = RequestRouter(self)
         server.TCPRequestHandler.__init__(self, request, client_address, serv)
 
     def receive(self, data):

@@ -13,7 +13,8 @@ class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 class TCPRequestHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
-        data = self.rfile.readline()
+        # TODO Include message size in first packet to determine how many times to call recv
+        data = self.request.recv(4096)
         self.receive(data)
 
     def receive(self, data):
@@ -43,6 +44,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         Called by the server to receive new data
         :return: None
         """
+        # TODO Include message size in first packet to determine how many calls to wait for
         data = self.request[0]
         self.receive(data)
 

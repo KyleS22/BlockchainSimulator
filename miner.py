@@ -4,6 +4,7 @@ import math
 import time
 import threading
 import logging
+from google.protobuf import message
 
 
 class Miner:
@@ -14,6 +15,14 @@ class Miner:
     is mined every DIFFICULTY_TARGET seconds.
     """
     DIFFICULTY_TARGET = 15.0
+
+    def get_resolution_chain(self):
+        """
+        Returns the binary encoded chain without the block bodies that can be used
+        to resolve a node with a lower cost chain that needs to catch up
+        :return: The binary encoded resolution chain
+        """
+        return self.chain.encode(False)
 
     def __init__(self):
 
@@ -79,17 +88,49 @@ class Miner:
             cur = self.chain.blocks[-1]
             if chain_cost > self.chain.get_cost():
                 if not block.is_valid(cur.hash()):
-                    return False
+                    return self.__add_floating_block(block)
 
-                logging.debug("ADDED VALID REMOTE BLOCK!!!")
+                logging.debug("Added valid remote block\n\n")
                 block.set_previous_hash(cur.hash())
                 self.chain.add(block)
                 self.dirty = True
 
             elif chain_cost == self.chain.get_cost() and block != cur:
-                logging.debug('received a block thats the same length, tie breaker stuff')
+                logging.debug('Needs tie resolution\n\n')
 
-            return True
+            return None
+
+    def receive_resolution_chain(self, chain, res_chain):
+        with self.chain_lock:
+            pass
+            # n = min(len(self.chain.blocks), len(res_chain.blocks))
+            # for i in range(0, n):
+            #    try:
+            #        block = Block.decode(res_chain.blocks[i])
+            #    except message.DecodeError:
+            #        logging.debug('Error decoding block during resolution')
+            #        return
+            #
+            #    if self.chain.blocks[i] == block:
+            #        pass
+
+    def __add_floating_block(self, block):
+
+        for chain in self.floating_chains:
+            cur = chain.blocks[-1]
+            if block.is_valid(cur.hash()):
+                logging.debug("Add to existing floating chain\n\n")
+                block.set_previous_hash(cur.hash())
+                chain.add(block)
+                return None
+            elif block in chain.blocks:
+                return None
+
+        logging.debug("Create new floating chain\n\n")
+        chain = Chain()
+        chain.add(block)
+        self.floating_chains.append(chain)
+        return chain
 
     def ___add_block(self, block):
         """

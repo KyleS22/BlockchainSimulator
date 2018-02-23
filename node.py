@@ -3,7 +3,7 @@ from servers import server
 from servers.data_server import DataServer
 from servers.tcp_router import TCPRouter
 from servers.udp_router import UDPRouter
-from protos import request_pb2
+from protos import request_pb2, chain_pb2
 from google.protobuf import message
 from secrets import randbits
 import peer_to_peer_discovery as p2p
@@ -11,7 +11,7 @@ from node_pool import NodePool
 from requests import RequestRouter
 from block import Block
 import logging
-
+import socket
 
 class Node:
 
@@ -32,6 +32,7 @@ class Node:
         router.handlers[request_pb2.BLOB] = self.handle_blob
         router.handlers[request_pb2.DISOVERY] = self.handle_discovery
         router.handlers[request_pb2.MINED_BLOCK] = self.handle_mined_block
+        router.handlers[request_pb2.RESOLUTION] = self.handle_resolution
 
         self.tcp_router = server.TCPServer(Node.REQUEST_PORT, TCPRouter)
         self.tcp_router.router = router
@@ -108,4 +109,29 @@ class Node:
             logging.error("Error decoding message: %s", data)
             return
 
-        self.miner.receive_block(block, msg.chain_cost)
+        chain = self.miner.receive_block(block, msg.chain_cost)
+        if chain is not None:
+
+            req = request_pb2.Request()
+            req.request_type = request_pb2.RESOLUTION
+            req.SerializeToString()
+
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            logging.debug("Ask for resolution chain from: %s", handler.client_address[0])
+            s.connect((handler.client_address[0], Node.REQUEST_PORT))
+            s.sendall(req.SerializeToString())
+
+            # TODO add length to the message to determine how many times to call recv
+            res_data = s.recv(4096)
+
+            logging.debug("Received resolution chain: %s", data)
+            res_chain = chain_pb2.Chain()
+            try:
+                res_chain.ParseFromString(res_data)
+            except message.DecodeError:
+                logging.error("Error decoding resolve chain: %s", res_data)
+
+            self.miner.receive_resolution_chain(chain, res_chain)
+
+    def handle_resolution(self, data, handler):
+        handler.send(self.miner.get_resolution_chain())

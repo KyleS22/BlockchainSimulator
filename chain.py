@@ -57,6 +57,10 @@ class Chain:
         self.__cost += block.get_cost()
         self.blocks.append(block)
 
+    def insert(self, idx, block):
+        self.__cost += block.get_cost()
+        self.blocks.insert(idx, block)
+
     def next(self, difficulty, blobs):
         """
         Build the next block to try to add to the chain.
@@ -111,3 +115,16 @@ class Chain:
             if not block.has_body():
                 indices.append(idx)
         return indices
+
+    def is_complete(self):
+        """
+        Determine if all blocks in the chain have their binary body data. This means that there
+        are no bodiless blocks.
+        :return: True if all blocks have their binary body data; otherwise, False
+        """
+        if not self.is_valid():
+            return False
+        for block in self.blocks:
+            if not block.has_body():
+                return False
+        return True

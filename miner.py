@@ -82,7 +82,7 @@ class Miner:
         :param block: The block that was mined.
         :param chain_cost: The total cost of the chain that the peer node is working on.
         """
-        logging.debug("\n\n\nReceive with cost: %s", chain_cost)
+        logging.debug("Receive with cost: %s", chain_cost)
         with self.chain_lock:
             cur = self.chain.blocks[-1]
             if chain_cost > self.chain.get_cost():
@@ -111,9 +111,9 @@ class Miner:
                 res_block = res_chain.blocks[i]
                 if i < chain_len and self.chain.blocks[i] == res_block:
                     block = self.chain.blocks[i]
-                    chain.blocks.insert(i, block)
+                    chain.insert(i, block)
                 else:
-                    chain.blocks.insert(i, res_block)
+                    chain.insert(i, res_block)
                 i += 1
 
         is_valid = chain.is_valid() and chain.get_cost() >= self.chain.get_cost()
@@ -134,31 +134,37 @@ class Miner:
 
     def receive_complete_chain(self, chain):
         with self.chain_lock:
-            if chain.get_cost() > self.chain.get_cost():
-                self.floating_chains.remove(chain)
-                self.chain = chain
-                self.dirty = True
+            self.__receive_complete_chain(chain)
 
-                logging.debug("/n/nREPLACED THE CHAIN!!!!")
+    def __receive_complete_chain(self, chain):
+        if chain.get_cost() > self.chain.get_cost():
+            self.floating_chains.remove(chain)
+            self.chain = chain
+            self.dirty = True
 
-            elif chain.get_cost() < self.chain.get_cost():
-                logging.debug("/n/nITS TOO SHORT!!!!")
-                self.floating_chains.remove(chain)
-            else:
-                logging.debug("/n/nITS THE SAME LENGTH, WAIT!!!!")
+            logging.debug("Its longer. Replace the chain.")
+
+        elif chain.get_cost() < self.chain.get_cost():
+            logging.debug("Its too short. Throw it out.")
+            self.floating_chains.remove(chain)
+        else:
+            logging.debug("The chains are the same length.")
 
     def __add_floating_block(self, block):
 
         for chain in self.floating_chains:
             cur = chain.blocks[-1]
             if block.is_valid(cur.hash()):
+
                 logging.debug("Add to existing floating chain")
                 block.set_previous_hash(cur.hash())
                 chain.add(block)
 
-                # TODO If chain has been resolved and cost is larger then swap out floating chain with chain
-
+                if chain.is_complete():
+                    self.__receive_complete_chain(chain)
+                else:
                 return None
+
             elif block in chain.blocks:
                 return None
 

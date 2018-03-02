@@ -112,31 +112,40 @@ class Node:
             return
 
         chain = self.miner.receive_block(block, msg.chain_cost)
-        if chain is not None:
+        if chain is None:
+            # The block was added to an existing chain
+            return
 
-            req = request_pb2.Request()
-            req.request_type = request_pb2.RESOLUTION
-            req.SerializeToString()
+        req = request_pb2.Request()
+        req.request_type = request_pb2.RESOLUTION
+        req.SerializeToString()
 
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            logging.debug("Ask for resolution chain from: %s", handler.client_address[0])
-            s.connect((handler.client_address[0], Node.REQUEST_PORT))
-            s.sendall(req.SerializeToString())
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        logging.debug("Ask for resolution chain from: %s", handler.client_address[0])
+        s.connect((handler.client_address[0], Node.REQUEST_PORT))
+        s.sendall(req.SerializeToString())
 
-            # TODO add length to the message to determine how many times to call recv
-            res_data = s.recv(4096)
+        # TODO add length to the message to determine how many times to call recv
+        res_data = s.recv(4096)
 
-            logging.debug("Received resolution chain: %s", data)
-            try:
-                res_chain = Chain.decode(res_data)
-            except message.DecodeError:
-                logging.error("Error decoding resolve chain: %s", res_data)
-                return
+        logging.debug("Received resolution chain: %s", data)
+        try:
+            res_chain = Chain.decode(res_data)
+        except message.DecodeError:
+            logging.error("Error decoding resolve chain: %s", res_data)
+            return
 
-            is_valid = self.miner.receive_resolution_chain(chain, res_chain)
-            if not is_valid:
-                logging.error("Invalid resolution chain")
-                return
+        is_valid = self.miner.receive_resolution_chain(chain, res_chain)
+        if not is_valid:
+            logging.error("Invalid resolution chain")
+            return
+
+        res_block_indices = self.miner.get_resolution_block_indices(chain)
+        for idx in res_block_indices:
+            # TODO Fetching of the block data for idx from s
+            pass
+
+        logging.debug("The chain is complete")
 
     def handle_resolution(self, data, handler):
         handler.send(self.miner.get_resolution_chain())

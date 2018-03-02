@@ -99,3 +99,15 @@ class Chain:
         for block in self.blocks:
             chain.blocks.append(block.encode(include_body))
         return chain.SerializeToString()
+
+    def get_bodiless_indices(self):
+        """
+        Gets the list of all blocks in the chain that only have a head. The blocks at
+        these indices are missing the binary data for their body.
+        :return: A list of the indices of blocks that are missing their binary body data.
+        """
+        indices = []
+        for idx, block in enumerate(self.blocks):
+            if not block.has_body():
+                indices.append(idx)
+        return indices

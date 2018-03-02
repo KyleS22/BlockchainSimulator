@@ -120,6 +120,16 @@ class Miner:
             self.floating_chains.remove(chain)
         return is_valid
 
+    def get_resolution_block_indices(self, chain):
+        """
+         Gets the list of all blocks in the chain that only have a head. The blocks at
+         these indices are missing the binary data for their body.
+         :param chain: The chain to find the indices of resolution blocks
+         :return: A list of the indices of blocks that are missing their binary body data.
+         """
+        with self.chain_lock:
+            return chain.get_bodiless_indices()
+
     def __add_floating_block(self, block):
 
         for chain in self.floating_chains:

@@ -1,7 +1,6 @@
 from secrets import randbits
 from hashlib import sha256
 from protos import block_pb2
-from google.protobuf import message
 import time
 import copy
 
@@ -73,6 +72,13 @@ class Block:
             BlobMessage objects.
         """
         return self.body
+
+    def has_body(self):
+        """
+        Determine if the block has its body data or only a head.
+        :return: Returns True if the block has its body data; otherwise, False is returned
+        """
+        return self.body is not None
 
     def get_cost(self):
         """

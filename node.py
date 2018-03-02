@@ -12,6 +12,8 @@ from requests import RequestRouter
 from block import Block
 import logging
 import socket
+from chain import Chain
+
 
 class Node:
 
@@ -125,13 +127,16 @@ class Node:
             res_data = s.recv(4096)
 
             logging.debug("Received resolution chain: %s", data)
-            res_chain = chain_pb2.Chain()
             try:
-                res_chain.ParseFromString(res_data)
+                res_chain = Chain.decode(res_data)
             except message.DecodeError:
                 logging.error("Error decoding resolve chain: %s", res_data)
+                return
 
-            self.miner.receive_resolution_chain(chain, res_chain)
+            is_valid = self.miner.receive_resolution_chain(chain, res_chain)
+            if not is_valid:
+                logging.error("Invalid resolution chain")
+                return
 
     def handle_resolution(self, data, handler):
         handler.send(self.miner.get_resolution_chain())

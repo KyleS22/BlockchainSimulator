@@ -10,6 +10,25 @@ class Chain:
     def get_cost(self):
         return self.__cost
 
+    @classmethod
+    def decode(cls, data):
+        """
+        Decode a chain from an encoded Chain protocol buffer.
+        :param data: The encoded chain.
+        :return: The decoded chain.
+        :except: If decoding fails then a DecodeError is thrown.
+        """
+
+        chain_data = chain_pb2.Chain()
+        chain_data.ParseFromString(data)
+
+        chain = cls()
+        for block_data in chain_data.blocks[1:]:
+            block = Block.decode(block_data)
+            chain.add(block)
+
+        return chain
+
     def __init__(self):
 
         # the dictionary of mined blobs to allow a blob to be looked up using its hash to find which block it is in

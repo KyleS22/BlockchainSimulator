@@ -82,6 +82,7 @@ class Miner:
         :param block: The block that was mined.
         :param chain_cost: The total cost of the chain that the peer node is working on.
         """
+        logging.debug("\n\n\nReceive with cost: %s", chain_cost)
         with self.chain_lock:
             cur = self.chain.blocks[-1]
             if chain_cost > self.chain.get_cost():
@@ -115,8 +116,9 @@ class Miner:
                     chain.blocks.insert(i, res_block)
                 i += 1
 
-        is_valid = chain.is_valid()
+        is_valid = chain.is_valid() and chain.get_cost() >= self.chain.get_cost()
         if not is_valid:
+            logging.debug("Cur cost: %s New cost: %s", chain.get_cost(), self.chain.get_cost())
             self.floating_chains.remove(chain)
         return is_valid
 
@@ -129,6 +131,21 @@ class Miner:
          """
         with self.chain_lock:
             return chain.get_bodiless_indices()
+
+    def receive_complete_chain(self, chain):
+        with self.chain_lock:
+            if chain.get_cost() > self.chain.get_cost():
+                self.floating_chains.remove(chain)
+                self.chain = chain
+                self.dirty = True
+
+                logging.debug("/n/nREPLACED THE CHAIN!!!!")
+
+            elif chain.get_cost() < self.chain.get_cost():
+                logging.debug("/n/nITS TOO SHORT!!!!")
+                self.floating_chains.remove(chain)
+            else:
+                logging.debug("/n/nITS THE SAME LENGTH, WAIT!!!!")
 
     def __add_floating_block(self, block):
 

@@ -145,7 +145,7 @@ class Node:
             # TODO Fetching of the block data for idx from s
             pass
 
-        logging.debug("The chain is complete")
+        self.miner.receive_complete_chain(chain)
 
     def handle_resolution(self, data, handler):
         handler.send(self.miner.get_resolution_chain())

@@ -162,7 +162,6 @@ class Miner:
 
                 if chain.is_complete():
                     self.__receive_complete_chain(chain)
-                else:
                 return None
 
             elif block in chain.blocks:

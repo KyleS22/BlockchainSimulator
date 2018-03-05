@@ -76,12 +76,14 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
             logging.debug("Message Length is: " + str(self.server.message_length))
             self.server.received_message = data[LENGTH_HEADER_SIZE:]
 
+
         if self.server.message_length != len(self.server.received_message):
             self.server.waiting_for_more_data = True
             logging.debug("Waiting for more data...")
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
+            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_maessage)))
 
         logging.debug("Got all data, calling receive...")
         self.receive(data)

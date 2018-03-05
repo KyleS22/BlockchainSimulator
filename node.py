@@ -58,7 +58,7 @@ class Node:
 
         req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
-        message_to_send = str(req_length) + req.SerializeToString()
+        message_to_send = req_length + req.SerializeToString()
 
         self.node_pool.multicast(message, Node.REQUEST_PORT)
 
@@ -95,7 +95,7 @@ class Node:
 
             req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
-            message_to_send = str(req_length) + req.SerializeToString()
+            message_to_send = req_length + req.SerializeToString()
 
             self.node_pool.multicast(message_to_send, Node.REQUEST_PORT)
         else:
@@ -132,7 +132,7 @@ class Node:
 
         req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
-        message_to_send = str(req_length) + req.SerializeToString()
+        message_to_send = req_length + req.SerializeToString()
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logging.debug("Ask for resolution chain from: %s", handler.client_address[0])

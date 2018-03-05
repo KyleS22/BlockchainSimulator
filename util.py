@@ -21,5 +21,10 @@ def log_collection(level, msg, col):
     logging.log(level, msg)
 
 
-def convert_int_to_32_bits(num):
-    return bin(num + 2**32)[-32:]
+def convert_int_to_4_bytes(num):
+    return (num).to_bytes(4, byteorder='big')
+
+def convert_int_from_4_bytes(bytes):
+    return int.from_bytes(bytes, 'big')
+
+

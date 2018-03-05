@@ -1,8 +1,9 @@
 import socketserver
 import threading
 import logging
+import util
 
-LENGTH_HEADER_SIZE = 32
+LENGTH_HEADER_SIZE = 4  # Bytes
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
@@ -18,10 +19,13 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
         # TODO Include message size in first packet to determine how many times to call recv
         data = self.request.recv(4096)
 
+        logging.debug("Got data %s", str(data))
+
         if self.server.waiting_for_more_data:
             self.server.received_maessage += data
         else:
-            self.server.message_length = int(data[:LENGTH_HEADER_SIZE],2)
+            self.server.message_length = util.convert_int_from_4_bytes(data[:LENGTH_HEADER_SIZE])
+            logging.debug("Message Length is: " + str(self.server.message_length))
             self.server.received_message = data[LENGTH_HEADER_SIZE:]
 
         if self.server.message_length != len(self.server.received_maessage):
@@ -63,10 +67,13 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         # TODO Include message size in first packet to determine how many calls to wait for
         data = self.request[0]
 
+        logging.debug("Got data %s", str(data))
+
         if self.server.waiting_for_more_data:
             self.server.received_maessage += data
         else:
-            self.server.message_length = int(data[:LENGTH_HEADER_SIZE], 2)
+            self.server.message_length = util.convert_int_from_4_bytes(data[:LENGTH_HEADER_SIZE])
+            logging.debug("Message Length is: " + str(self.server.message_length))
             self.server.received_message = data[LENGTH_HEADER_SIZE:]
 
         if self.server.message_length != len(self.server.received_maessage):

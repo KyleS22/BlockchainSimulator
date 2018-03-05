@@ -78,6 +78,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
 
         if self.server.message_length != len(self.server.received_message):
             self.server.waiting_for_more_data = True
+            logging.debug("Waiting for more data...")
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False

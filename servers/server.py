@@ -33,6 +33,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
+            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_maessage)))
 
         self.receive(data)
 

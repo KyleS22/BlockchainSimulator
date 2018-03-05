@@ -93,7 +93,7 @@ class Node:
             req.request_type = request_pb2.BLOB
             req.request_message = data
 
-            req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+            req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
             message_to_send = req_length + req.SerializeToString()
 
@@ -130,7 +130,7 @@ class Node:
         req.request_type = request_pb2.RESOLUTION
         req.SerializeToString()
 
-        req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+        req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
         message_to_send = req_length + req.SerializeToString()
 

@@ -38,7 +38,7 @@ class Heartbeat:
         req.request_type = request_pb2.DISOVERY
         req.request_message = msg.SerializeToString()
 
-        req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+        req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
 
         message_to_send = req_length + req.SerializeToString()
 

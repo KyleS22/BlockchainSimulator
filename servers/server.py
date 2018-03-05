@@ -22,7 +22,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
         logging.debug("TCP Got data %s", str(data))
 
         if self.server.waiting_for_more_data:
-            self.server.received_maessage += data
+            self.server.received_message += data
         else:
             self.server.message_length = util.convert_int_from_4_bytes(data[:LENGTH_HEADER_SIZE])
             logging.debug("Message Length is: " + str(self.server.message_length))
@@ -33,7 +33,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
-            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_maessage)))
+            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_message)))
 
         self.receive(data)
 
@@ -71,7 +71,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         logging.debug("UDP Got data %s", str(data))
 
         if self.server.waiting_for_more_data:
-            self.server.received_maessage += data
+            self.server.received_message += data
         else:
             self.server.message_length = util.convert_int_from_4_bytes(data[:LENGTH_HEADER_SIZE])
             logging.debug("Message Length is: " + str(self.server.message_length))
@@ -84,7 +84,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
-            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_maessage)))
+            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_message)))
 
         logging.debug("Got all data, calling receive...")
         self.receive(data)

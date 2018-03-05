@@ -3,6 +3,7 @@ import threading
 from protos import request_pb2
 import logging
 import time
+import util
 
 
 class Heartbeat:
@@ -36,10 +37,15 @@ class Heartbeat:
         req = request_pb2.Request()
         req.request_type = request_pb2.DISOVERY
         req.request_message = msg.SerializeToString()
+
+        req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+
+        message_to_send = req_length + req.SerializeToString()
+
         data = req.SerializeToString()
 
         while True:
-            sock.sendto(data, ('255.255.255.255', self.broadcast_port))
+            sock.sendto(message_to_send, ('255.255.255.255', self.broadcast_port))
             logging.debug("Sent heartbeat")
             time.sleep(self.heartbeat)
 

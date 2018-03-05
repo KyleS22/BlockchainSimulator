@@ -13,6 +13,7 @@ from block import Block
 import logging
 import socket
 from chain import Chain
+import util
 
 
 class Node:
@@ -55,7 +56,11 @@ class Node:
         req.request_type = request_pb2.MINED_BLOCK
         req.request_message = msg.SerializeToString()
 
-        self.node_pool.multicast(req.SerializeToString(), Node.REQUEST_PORT)
+        req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
+
+        message_to_send = req_length + req.SerializeToString()
+
+        self.node_pool.multicast(message, Node.REQUEST_PORT)
 
     def run(self):
         """
@@ -87,7 +92,12 @@ class Node:
             req = request_pb2.Request()
             req.request_type = request_pb2.BLOB
             req.request_message = data
-            self.node_pool.multicast(req.SerializeToString(), Node.REQUEST_PORT)
+
+            req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+
+            message_to_send = req_length + req.SerializeToString()
+
+            self.node_pool.multicast(message_to_send, Node.REQUEST_PORT)
         else:
             logging.debug("received duplicate blob")
 
@@ -120,10 +130,14 @@ class Node:
         req.request_type = request_pb2.RESOLUTION
         req.SerializeToString()
 
+        req_length = util.convert_int_to_32_bits(len(req.serializeToString()))
+
+        message_to_send = req_length + req.SerializeToString()
+
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logging.debug("Ask for resolution chain from: %s", handler.client_address[0])
         s.connect((handler.client_address[0], Node.REQUEST_PORT))
-        s.sendall(req.SerializeToString())
+        s.sendall(message_to_send)
 
         # TODO add length to the message to determine how many times to call recv
         res_data = s.recv(4096)

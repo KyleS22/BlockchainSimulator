@@ -19,3 +19,7 @@ def log_collection(level, msg, col):
     msg += "]"
 
     logging.log(level, msg)
+
+
+def convert_int_to_32_bits(num):
+    return bin(num)[2:].zfill(32)

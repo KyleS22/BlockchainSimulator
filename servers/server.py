@@ -19,7 +19,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
         # TODO Include message size in first packet to determine how many times to call recv
         data = self.request.recv(4096)
 
-        logging.debug("Got data %s", str(data))
+        logging.debug("TCP Got data %s", str(data))
 
         if self.server.waiting_for_more_data:
             self.server.received_maessage += data
@@ -67,7 +67,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         # TODO Include message size in first packet to determine how many calls to wait for
         data = self.request[0]
 
-        logging.debug("Got data %s", str(data))
+        logging.debug("UDP Got data %s", str(data))
 
         if self.server.waiting_for_more_data:
             self.server.received_maessage += data
@@ -83,6 +83,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
 
+        logging.debug("Got all data, calling receive...")
         self.receive(data)
 
     def receive(self, data):

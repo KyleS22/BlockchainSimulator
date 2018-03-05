@@ -87,6 +87,8 @@ class Node:
         self.udp_router.server_close()
 
     def handle_blob(self, data, handler):
+        logging.debug("Got a blob " + str(data))
+
         if self.miner.add(data):
             logging.debug("forward blob to peers")
             req = request_pb2.Request()
@@ -102,6 +104,7 @@ class Node:
             logging.debug("received duplicate blob")
 
     def handle_discovery(self, data, handler):
+        logging.debug("Got discovery message")
         msg = request_pb2.DiscoveryMessage()
         try:
             msg.ParseFromString(data)
@@ -112,7 +115,7 @@ class Node:
         self.node_pool.add(msg.node_id, handler.client_address[0])
 
     def handle_mined_block(self, data, handler):
-
+        logging.debug("Got mined block")
         msg = request_pb2.MinedBlockMessage()
         try:
             msg.ParseFromString(data)

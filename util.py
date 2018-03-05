@@ -22,4 +22,4 @@ def log_collection(level, msg, col):
 
 
 def convert_int_to_32_bits(num):
-    return int(bin(num + 2**32)[-32:])
+    return bin(num + 2**32)[-32:]

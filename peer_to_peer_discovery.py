@@ -39,8 +39,8 @@ class Heartbeat:
         req.request_message = msg.SerializeToString()
 
         req_length = util.convert_int_to_32_bits(len(req.SerializeToString()))
-        logging.debug("req_length: " + type(req_length) + " " + str(req_length))
-        logging.debug("req: " + req.SerializeToString())
+        logging.debug("req_length: " + str(type(req_length)) + " " + str(req_length))
+
         message_to_send = req_length + req.SerializeToString()
 
         data = req.SerializeToString()

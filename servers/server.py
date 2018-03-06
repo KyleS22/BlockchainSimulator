@@ -45,6 +45,17 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
     def send(self, data):
         self.request.sendall(data)
 
+class TCPLineRequestHandler(socketserver.StreamRequestHandler):
+
+    def handle(self):
+        data = self.rfile.readline()
+        self.receive(data)
+
+    def receive(self, data):
+        pass
+
+    def send(self, data):
+        self.request.sendall(data)
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     """

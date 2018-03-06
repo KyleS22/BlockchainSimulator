@@ -5,7 +5,7 @@ from protos import request_pb2
 from servers import server
 
 
-class DataServer(server.TCPRequestHandler):
+class DataServer(server.TCPLineRequestHandler):
     """
     The data server for receiving incoming TCP binary data from outside the peer to peer network.
     """

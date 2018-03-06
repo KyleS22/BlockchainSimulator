@@ -4,11 +4,13 @@ import logging
 import util
 
 LENGTH_HEADER_SIZE = 4  # Bytes
+MAX_BYTES = 4096
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
     def __init__(self, port, handler):
         self.waiting_for_more_data = False
+        self.numbytes = MAX_BYTES
         socketserver.TCPServer.allow_reuse_address = True
         socketserver.TCPServer.__init__(self, ("", port), handler)
 
@@ -17,7 +19,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
         # TODO Include message size in first packet to determine how many times to call recv
-        data = self.request.recv(4096)
+        data = self.request.recv(self.server.numbytes)
 
         logging.debug("TCP Got data %s", str(data))
 
@@ -29,14 +31,21 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
             self.server.received_message = data[LENGTH_HEADER_SIZE:]
 
         if self.server.message_length != len(self.server.received_message):
+
             self.server.waiting_for_more_data = True
+            self.server.numbytes = self.server.message_length - len(self.server.received_message)
+
+            if(self.server.numbytes > MAX_BYTES):
+                self.server.numbytes = MAX_BYTES
+
             logging.debug("Waiting for more data...")
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
-            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_message)))
+
 
         logging.debug("Got all data, calling receive...")
+        self.server.numbytes = MAX_BYTES
         self.receive(data)
 
     def receive(self, data):
@@ -93,13 +102,20 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
 
         if self.server.message_length != len(self.server.received_message):
             self.server.waiting_for_more_data = True
+
+            self.server.numbytes = self.server.message_length - len(self.server.received_message)
+
+            if (self.server.numbytes > MAX_BYTES):
+                self.server.numbytes = MAX_BYTES
+
             logging.debug("Waiting for more data...")
             return
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
-            logging.debug(str(self.server.message_length) + " == " + str(len(self.server.received_message)))
+
 
         logging.debug("Got all data, calling receive...")
+        self.server.numbytes = MAX_BYTES
         self.receive(data)
 
     def receive(self, data):

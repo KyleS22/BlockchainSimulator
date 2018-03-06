@@ -16,9 +16,12 @@ from chain import Chain
 import util
 
 
+
 class Node:
 
     REQUEST_PORT = 10000
+    MAX_BYTES = 4096
+    LENGTH_HEADER_SIZE = 4
 
     def __init__(self):
         """
@@ -142,10 +145,22 @@ class Node:
         s.connect((handler.client_address[0], Node.REQUEST_PORT))
         s.sendall(message_to_send)
 
-        # TODO add length to the message to determine how many times to call recv
-        res_data = s.recv(4096)
+        res_data = s.recv(self.MAX_BYTES)
+
+        message_length = util.convert_int_from_4_bytes(data[:self.LENGTH_HEADER_SIZE])
+        logging.debug("NODE: Message Length is: " + str(self.server.message_length))
+        res_data = data[self.LENGTH_HEADER_SIZE:]
+
+        while message_length != len(res_data):
+            numbytes = message_length = len(res_data)
+
+            if numbytes > self.MAX_BYTES:
+                numbytes = self.MAX_BYTES
+
+            res_data += s.recv(numbytes)
 
         logging.debug("Received resolution chain: %s", data)
+
         try:
             res_chain = Chain.decode(res_data)
         except message.DecodeError:
@@ -165,4 +180,9 @@ class Node:
         self.miner.receive_complete_chain(chain)
 
     def handle_resolution(self, data, handler):
-        handler.send(self.miner.get_resolution_chain())
+        res_chain = self.miner.get_resolution_chain()
+        message_length = util.convert_int_to_4_bytes(len(res_chain))
+
+        message = message_length[:self.LENGTH_HEADER_SIZE] + res_chain[self.LENGTH_HEADER_SIZE:]
+
+        handler.send(message)

@@ -18,7 +18,7 @@ class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 class TCPRequestHandler(socketserver.StreamRequestHandler):
 
     def handle(self):
-        # TODO Include message size in first packet to determine how many times to call recv
+
         data = self.request.recv(self.server.numbytes)
 
         logging.debug("TCP Got data %s", str(data))
@@ -35,7 +35,7 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
             self.server.waiting_for_more_data = True
             self.server.numbytes = self.server.message_length - len(self.server.received_message)
 
-            if(self.server.numbytes > MAX_BYTES):
+            if self.server.numbytes > MAX_BYTES:
                 self.server.numbytes = MAX_BYTES
 
             logging.debug("Waiting for more data...")
@@ -87,7 +87,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         Called by the server to receive new data
         :return: None
         """
-        # TODO Include message size in first packet to determine how many calls to wait for
+
         data = self.request[0]
 
         logging.debug("UDP Got data %s", str(data))

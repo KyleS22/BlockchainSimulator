@@ -110,7 +110,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
 
         logging.debug("Got all data, calling receive...")
 
-        self.receive(data)
+        self.receive(self.server.received_message)
 
     def receive(self, data):
         """

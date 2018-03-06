@@ -136,6 +136,7 @@ class Node:
         req.request_type = request_pb2.RESOLUTION
         req.SerializeToString()
 
+        # Parse the length bytes
         req_length = util.convert_int_to_4_bytes(len(req.SerializeToString()))
 
         message_to_send = req_length[:] + req.SerializeToString()[:]
@@ -145,12 +146,14 @@ class Node:
         s.connect((handler.client_address[0], Node.REQUEST_PORT))
         s.sendall(message_to_send)
 
+        # Receive as much as we can
         res_data = s.recv(self.MAX_BYTES)
 
-        message_length = util.convert_int_from_4_bytes(data[:self.LENGTH_HEADER_SIZE])
+        message_length = util.convert_int_from_4_bytes(res_data[:self.LENGTH_HEADER_SIZE])
         logging.debug("NODE: Message Length is: " + str(self.server.message_length))
         res_data = data[self.LENGTH_HEADER_SIZE:]
 
+        # Receive the rest while we don't have it all
         while message_length != len(res_data):
             numbytes = message_length = len(res_data)
 

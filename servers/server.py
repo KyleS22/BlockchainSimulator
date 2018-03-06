@@ -91,7 +91,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
         data = self.request[0]
 
         logging.debug("UDP Got data %s", str(data))
-
+        logging.debug("data_len = " + str(len(data)))
         if self.server.waiting_for_more_data:
             self.server.received_message += data
         else:
@@ -99,14 +99,8 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
             logging.debug("Message Length is: " + str(self.server.message_length))
             self.server.received_message = data[LENGTH_HEADER_SIZE:]
 
-
         if self.server.message_length != len(self.server.received_message):
             self.server.waiting_for_more_data = True
-
-            self.server.numbytes = self.server.message_length - len(self.server.received_message)
-
-            if (self.server.numbytes > MAX_BYTES):
-                self.server.numbytes = MAX_BYTES
 
             logging.debug("Waiting for more data...")
             return
@@ -115,7 +109,7 @@ class UDPRequestHandler(socketserver.BaseRequestHandler):
 
 
         logging.debug("Got all data, calling receive...")
-        self.server.numbytes = MAX_BYTES
+
         self.receive(data)
 
     def receive(self, data):

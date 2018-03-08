@@ -16,8 +16,15 @@ class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 
 class TCPRequestHandler(socketserver.StreamRequestHandler):
+    """
+    Request handler for TCP data from other nodes sending messages in the network
+    """
 
     def handle(self):
+        """
+        Called by the server to receive new data
+        :return: None
+        """
 
         data = self.request.recv(self.server.numbytes)
 
@@ -43,27 +50,53 @@ class TCPRequestHandler(socketserver.StreamRequestHandler):
         elif self.server.message_length == len(self.server.received_message):
             self.server.waiting_for_more_data = False
 
-
         logging.debug("Got all data, calling receive...")
         self.server.numbytes = MAX_BYTES
         self.receive(data)
 
     def receive(self, data):
+        """
+        Process the new data. Implemented when subclassing this class
+        :param data: The data to be processed
+        :return: None
+        """
         pass
 
     def send(self, data):
+        """
+        Send the given data to the connection
+        :param data: The data to send
+        :return: None
+        """
         self.request.sendall(data)
 
 class TCPLineRequestHandler(socketserver.StreamRequestHandler):
+    """
+    TCP request handler for incoming data from an external node
+    """
 
     def handle(self):
+        """
+        Called by the server to receive new data
+        :return: None
+        """
         data = self.rfile.readline()
         self.receive(data)
 
     def receive(self, data):
+        """
+        Process the new data. Implemented when subclassing this class
+        :param data: The data to be processed
+        :return: None
+        """
         pass
 
     def send(self, data):
+        """
+        Send the given data to the connection
+        :param data: The data to send
+        :return: None
+        """
         self.request.sendall(data)
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):

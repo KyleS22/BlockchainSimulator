@@ -10,3 +10,12 @@ An implementation of a simple blockchain that can accept arbitrary binary data a
 ## Documentation
 
 ## Design
+
+### TODO For Alpha 1
+- [ ] Documentation
+  - [ ] README
+  - [ ] Quick Start Guide
+  - [ ] Simple Design
+  - [ ] Testing
+  
+- [ ] Send Data for Chain Resolution

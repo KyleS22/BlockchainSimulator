@@ -19,3 +19,4 @@ An implementation of a simple blockchain that can accept arbitrary binary data a
   - [ ] Testing
   
 - [ ] Send Data for Chain Resolution
+- [ ] Be able to inspect data in the chain

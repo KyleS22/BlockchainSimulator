@@ -19,3 +19,23 @@ def log_collection(level, msg, col):
     msg += "]"
 
     logging.log(level, msg)
+
+
+def convert_int_to_4_bytes(num):
+    """
+    Convert the given integer into a bytstring representation
+    :param num: The number to convert
+    :return: The bytestring representation of num
+    """
+    return (num).to_bytes(4, byteorder='big')
+
+
+def convert_int_from_4_bytes(bytes):
+    """
+    Convert a 4 byte bytstring into an integer
+    :param bytes: The 4 byte bytestring to convert
+    :return: The integer representation of bytes
+    """
+    return int.from_bytes(bytes, 'big')
+
+

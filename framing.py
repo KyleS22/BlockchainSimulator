@@ -37,6 +37,15 @@ def receive_framed_segment(sock):
     len_header = b''
     bytes_received = 0
 
+    # Check for closed socket connection in case there isn't a next message
+    segment = sock.recv(LENGTH_HEADER_SIZE - bytes_received)
+    if segment == b'':
+        return segment
+
+    len_header += segment
+    bytes_received = bytes_received + len(segment)
+
+    # Receive the rest of the length header if it wasn't in the the first TCP segment
     while bytes_received < LENGTH_HEADER_SIZE:
         segment = sock.recv(LENGTH_HEADER_SIZE - bytes_received)
         if segment == b'':

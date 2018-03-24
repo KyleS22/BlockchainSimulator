@@ -3,7 +3,7 @@ from servers import server
 from servers.data_server import DataServer
 from servers.tcp_router import TCPRouter
 from servers.udp_router import UDPRouter
-from protos import request_pb2, chain_pb2
+from protos import request_pb2
 from google.protobuf import message
 from secrets import randbits
 import peer_to_peer_discovery as p2p
@@ -13,15 +13,12 @@ from block import Block
 import logging
 import socket
 from chain import Chain
-import util
-
+import framing
 
 
 class Node:
 
     REQUEST_PORT = 10000
-    MAX_BYTES = 4096
-    LENGTH_HEADER_SIZE = 4
 
     def __init__(self):
         """
@@ -58,12 +55,9 @@ class Node:
         req = request_pb2.Request()
         req.request_type = request_pb2.MINED_BLOCK
         req.request_message = msg.SerializeToString()
+        data = req.SerializeToString()
 
-        req_length = util.convert_int_to_4_bytes(len(req.SerializeToString()))
-
-        message_to_send = req_length[:] + req.SerializeToString()[:]
-
-        self.node_pool.multicast(message_to_send, Node.REQUEST_PORT)
+        self.node_pool.multicast(data, Node.REQUEST_PORT)
 
     def run(self):
         """
@@ -97,12 +91,9 @@ class Node:
             req = request_pb2.Request()
             req.request_type = request_pb2.BLOB
             req.request_message = data
+            msg = req.SerializeToString()
 
-            req_length = util.convert_int_to_4_bytes(len(req.SerializeToString()))
-
-            message_to_send = req_length[:] + req.SerializeToString()[:]
-
-            self.node_pool.multicast(message_to_send, Node.REQUEST_PORT)
+            self.node_pool.multicast(msg, Node.REQUEST_PORT)
         else:
             logging.debug("received duplicate blob")
 
@@ -131,45 +122,61 @@ class Node:
         if chain is None:
             # The block was added to an existing chain
             return
+        self.start_chain_resolution(handler.client_address[0], chain)
 
+    def handle_resolution(self, data, handler):
+        """
+        Handle a resolution message from a peer when a peer asks
+        for the block header's for the this peer's higher cost chain by
+        sending back the current chain's block headers.
+        :param data:  The message data which is unused because the resolution message
+                        only depends on the message type, not the body.
+        :param handler: The TCP handler that received the resolution message.
+        """
+        res_chain = self.miner.get_resolution_chain()
+        msg = framing.frame_segment(res_chain)
+        handler.send(msg)
+
+    def start_chain_resolution(self, peer_addr, chain):
+        """
+        Begin the chain resolution protocol for fetching all data
+        associated with a higher cost chain in the network to allow
+        the current node to mine the correct chain.
+        :param peer_addr: The address of the peer with the higher cost chain
+        :param chain: The incomplete higher cost chain that requires resolution
+        """
+
+        # Ask for the peer's block headers from the chain to find
+        # the point where the current chain diverges from the higher
+        # cost chain
         req = request_pb2.Request()
         req.request_type = request_pb2.RESOLUTION
-        req.SerializeToString()
-
-        # Parse the length bytes
-        req_length = util.convert_int_to_4_bytes(len(req.SerializeToString()))
-
-        message_to_send = req_length[:] + req.SerializeToString()[:]
+        req_data = req.SerializeToString()
+        msg = framing.frame_segment(req_data)
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        logging.debug("Ask for resolution chain from: %s", handler.client_address[0])
-        s.connect((handler.client_address[0], Node.REQUEST_PORT))
-        s.sendall(message_to_send)
+        logging.debug("Ask for resolution chain from: %s", peer_addr)
+        s.connect((peer_addr, Node.REQUEST_PORT))
+        s.sendall(msg)
 
-        # Receive as much as we can
-        res_data = s.recv(self.MAX_BYTES)
+        # Receive the resolution chain from the peer
+        try:
+            res_data = framing.receive_framed_segment(s)
+        except RuntimeError:
+            logging.error("Error receiving resolve chain")
+            return
+        logging.debug("Received resolution chain")
 
-        message_length = util.convert_int_from_4_bytes(res_data[:self.LENGTH_HEADER_SIZE])
-        logging.debug("NODE: Message Length is: " + str(self.server.message_length))
-        res_data = data[self.LENGTH_HEADER_SIZE:]
-
-        # Receive the rest while we don't have it all
-        while message_length != len(res_data):
-            numbytes = message_length = len(res_data)
-
-            if numbytes > self.MAX_BYTES:
-                numbytes = self.MAX_BYTES
-
-            res_data += s.recv(numbytes)
-
-        logging.debug("Received resolution chain: %s", data)
-
+        # Decode the resolution chain's protocol buffer
         try:
             res_chain = Chain.decode(res_data)
         except message.DecodeError:
             logging.error("Error decoding resolve chain: %s", res_data)
             return
 
+        # Notify the miner that the block headers for the longer chain
+        # were received to verify if the chain has a higher cost than
+        # the current chain and hashes correctly
         is_valid = self.miner.receive_resolution_chain(chain, res_chain)
         if not is_valid:
             logging.error("Invalid resolution chain")
@@ -181,11 +188,3 @@ class Node:
             pass
 
         self.miner.receive_complete_chain(chain)
-
-    def handle_resolution(self, data, handler):
-        res_chain = self.miner.get_resolution_chain()
-        message_length = util.convert_int_to_4_bytes(len(res_chain))
-
-        message = message_length[:self.LENGTH_HEADER_SIZE] + res_chain[self.LENGTH_HEADER_SIZE:]
-
-        handler.send(message)

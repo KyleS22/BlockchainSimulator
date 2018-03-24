@@ -6,7 +6,6 @@ import copy
 
 
 class BlockBuilder:
-
     def __init__(self, prev_hash, difficulty):
         """
          Initialize a new block builder for building the next block in the chain.
@@ -35,7 +34,6 @@ class BlockBuilder:
 
 
 class Block:
-
     """
     The number of leading 0's required for the SHA256 hash of the genesis block.
     """
@@ -96,7 +94,7 @@ class Block:
 
     def set_previous_hash(self, hash):
         self.prev_hash = hash
-    
+
     @classmethod
     def genesis(cls):
         """
@@ -106,16 +104,29 @@ class Block:
         return cls(b'', cls.GENESIS_DIFFICULTY, block_pb2.BlockBody(), cls.GENESIS_TIMESTAMP, 0, cls.GENESIS_NONCE)
 
     @classmethod
-    def decode(cls, data):
+    def decode(cls, data, has_body=True):
         """
         Decode a block from an encoded Block protocol buffer.
         :param data: The encoded block.
+        :param has_body: True if the block has its body data; otherwise, false
         :return: The decoded block.
         :except: If decoding fails then a DecodeError is thrown.
         """
-        block = block_pb2.Block()
-        block.ParseFromString(data)
-        return cls(block.prev_hash, block.header.difficulty, block.body, block.header.timestamp, block.header.entropy, block.nonce)
+        block_data = block_pb2.Block()
+        block_data.ParseFromString(data)
+
+        if has_body:
+            body_hash = None
+        else:
+            body_hash = block_data.header.body_hash
+
+        return cls(block_data.prev_hash,
+                   block_data.header.difficulty,
+                   block_data.body,
+                   block_data.header.timestamp,
+                   block_data.header.entropy,
+                   block_data.nonce,
+                   body_hash)
 
     @classmethod
     def block(cls, prev_hash, difficulty, body):
@@ -128,7 +139,7 @@ class Block:
         """
         return cls(prev_hash, difficulty, body, time.time())
 
-    def __init__(self, prev_hash, difficulty, body, timestamp, entropy=randbits(32), nonce=0):
+    def __init__(self, prev_hash, difficulty, body, timestamp, entropy=randbits(32), nonce=0, body_hash=None):
         """
         Initialize a new block
         :param prev_hash: The hash of the previous block in the block chain.
@@ -147,7 +158,10 @@ class Block:
         self.header.entropy = entropy
         self.header.timestamp = timestamp
         self.header.difficulty = difficulty
-        self.header.body_hash = sha256(self.body.SerializeToString()).digest()
+        if body_hash is not None:
+            self.header.body_hash = body_hash
+        else:
+            self.header.body_hash = sha256(self.body.SerializeToString()).digest()
         self.cur_hash = sha256(self.header.SerializeToString()).digest()
 
     def __eq__(self, other):

@@ -11,10 +11,11 @@ class Chain:
         return self.__cost
 
     @classmethod
-    def decode(cls, data):
+    def decode(cls, data, has_bodies):
         """
         Decode a chain from an encoded Chain protocol buffer.
         :param data: The encoded chain.
+        :param has_bodies: True if the encoded chain's blocks have their body data.
         :return: The decoded chain.
         :except: If decoding fails then a DecodeError is thrown.
         """
@@ -24,7 +25,7 @@ class Chain:
 
         chain = cls()
         for block_data in chain_data.blocks[1:]:
-            block = Block.decode(block_data)
+            block = Block.decode(block_data, has_bodies)
             chain.add(block)
 
         return chain

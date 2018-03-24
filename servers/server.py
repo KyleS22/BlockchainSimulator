@@ -27,8 +27,8 @@ class TCPRequestHandler(socketserver.BaseRequestHandler):
         except RuntimeError as err:
             logging.error("Error receiving framed TCP segment %s", err)
             return
-
-        self.receive(data)
+        if data != b'':
+            self.receive(data)
 
     def receive(self, data):
         """

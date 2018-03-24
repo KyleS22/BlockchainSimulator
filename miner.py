@@ -113,6 +113,7 @@ class Miner:
                     block = self.chain.blocks[i]
                     chain.insert(i, block)
                 else:
+                    res_block.body = None
                     chain.insert(i, res_block)
                 i += 1
 
@@ -121,6 +122,16 @@ class Miner:
             logging.debug("Cur cost: %s New cost: %s", chain.get_cost(), self.chain.get_cost())
             self.floating_chains.remove(chain)
         return is_valid
+
+    def receive_resolution_block(self, block, idx, chain):
+        with self.chain_lock:
+            cur = chain.blocks[idx - 1]
+            if not block.is_valid(cur.hash()):
+                return False
+
+            block.set_previous_hash(cur.hash())
+            chain.blocks[idx] = block
+            return True
 
     def get_resolution_block_indices(self, chain):
         """
@@ -131,6 +142,12 @@ class Miner:
          """
         with self.chain_lock:
             return chain.get_bodiless_indices()
+
+    def get_resolution_block(self, idx):
+        with self.chain_lock:
+            if idx <= 0 or idx >= len(self.chain.blocks):
+                return None
+            return self.chain.blocks[idx].encode()
 
     def receive_complete_chain(self, chain):
         with self.chain_lock:

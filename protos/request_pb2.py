@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='protos/request.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x14protos/request.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\"6\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\r\n\x05\x62lock\x18\x02 \x01(\x0c\"#\n\x10\x44iscoveryMessage\x12\x0f\n\x07node_id\x18\x01 \x01(\x07*Q\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x12\x0c\n\x08\x44ISOVERY\x10\x03\x12\x0e\n\nRESOLUTION\x10\x04\x62\x06proto3')
+  serialized_pb=_b('\n\x14protos/request.proto\"F\n\x07Request\x12\"\n\x0crequest_type\x18\x01 \x01(\x0e\x32\x0c.RequestType\x12\x17\n\x0frequest_message\x18\x02 \x01(\x0c\".\n\x0b\x42lobMessage\x12\x11\n\ttimestamp\x18\x01 \x01(\x01\x12\x0c\n\x04\x62lob\x18\x02 \x01(\x0c\"6\n\x11MinedBlockMessage\x12\x12\n\nchain_cost\x18\x01 \x01(\r\x12\r\n\x05\x62lock\x18\x02 \x01(\x0c\"#\n\x10\x44iscoveryMessage\x12\x0f\n\x07node_id\x18\x01 \x01(\x07\")\n\x16\x42lockResolutionMessage\x12\x0f\n\x07indices\x18\x01 \x03(\x07*g\n\x0bRequestType\x12\x08\n\x04\x42LOB\x10\x00\x12\t\n\x05\x41LIVE\x10\x01\x12\x0f\n\x0bMINED_BLOCK\x10\x02\x12\x0c\n\x08\x44ISOVERY\x10\x03\x12\x0e\n\nRESOLUTION\x10\x04\x12\x14\n\x10\x42LOCK_RESOLUTION\x10\x05\x62\x06proto3')
 )
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
@@ -49,11 +49,15 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
       name='RESOLUTION', index=4, number=4,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='BLOCK_RESOLUTION', index=5, number=5,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=237,
-  serialized_end=318,
+  serialized_start=280,
+  serialized_end=383,
 )
 _sym_db.RegisterEnumDescriptor(_REQUESTTYPE)
 
@@ -63,6 +67,7 @@ ALIVE = 1
 MINED_BLOCK = 2
 DISOVERY = 3
 RESOLUTION = 4
+BLOCK_RESOLUTION = 5
 
 
 
@@ -210,11 +215,43 @@ _DISCOVERYMESSAGE = _descriptor.Descriptor(
   serialized_end=235,
 )
 
+
+_BLOCKRESOLUTIONMESSAGE = _descriptor.Descriptor(
+  name='BlockResolutionMessage',
+  full_name='BlockResolutionMessage',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='indices', full_name='BlockResolutionMessage.indices', index=0,
+      number=1, type=7, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=237,
+  serialized_end=278,
+)
+
 _REQUEST.fields_by_name['request_type'].enum_type = _REQUESTTYPE
 DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
 DESCRIPTOR.message_types_by_name['BlobMessage'] = _BLOBMESSAGE
 DESCRIPTOR.message_types_by_name['MinedBlockMessage'] = _MINEDBLOCKMESSAGE
 DESCRIPTOR.message_types_by_name['DiscoveryMessage'] = _DISCOVERYMESSAGE
+DESCRIPTOR.message_types_by_name['BlockResolutionMessage'] = _BLOCKRESOLUTIONMESSAGE
 DESCRIPTOR.enum_types_by_name['RequestType'] = _REQUESTTYPE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -245,6 +282,13 @@ DiscoveryMessage = _reflection.GeneratedProtocolMessageType('DiscoveryMessage', 
   # @@protoc_insertion_point(class_scope:DiscoveryMessage)
   ))
 _sym_db.RegisterMessage(DiscoveryMessage)
+
+BlockResolutionMessage = _reflection.GeneratedProtocolMessageType('BlockResolutionMessage', (_message.Message,), dict(
+  DESCRIPTOR = _BLOCKRESOLUTIONMESSAGE,
+  __module__ = 'protos.request_pb2'
+  # @@protoc_insertion_point(class_scope:BlockResolutionMessage)
+  ))
+_sym_db.RegisterMessage(BlockResolutionMessage)
 
 
 # @@protoc_insertion_point(module_scope)

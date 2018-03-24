@@ -24,6 +24,7 @@ class Node:
         """
         Initialize the servers and miner required for a peer to peer node to operate.
         """
+        logging.debug("\n\n\n STARTING")
         node_id = randbits(32) # Create a unique ID for this node
         self.node_pool = NodePool(node_id, 30, 105)
 
@@ -36,6 +37,7 @@ class Node:
         router.handlers[request_pb2.DISOVERY] = self.handle_discovery
         router.handlers[request_pb2.MINED_BLOCK] = self.handle_mined_block
         router.handlers[request_pb2.RESOLUTION] = self.handle_resolution
+        router.handlers[request_pb2.BLOCK_RESOLUTION] = self.handle_block_resolution
 
         self.tcp_router = server.TCPServer(Node.REQUEST_PORT, TCPRouter)
         self.tcp_router.router = router
@@ -137,6 +139,34 @@ class Node:
         msg = framing.frame_segment(res_chain)
         handler.send(msg)
 
+        # handle block resolution with the same connection if
+        # block resolution is required
+        handler.handle()
+
+    def handle_block_resolution(self, data, handler):
+        """
+        Handle the block resolution message which provides a list of
+        indices for which to fetch block data.
+        :param data: The block resolution message containing the block indices
+                        for which to fetch the body data.
+        :param handler: The handler that manages the connection with the peer.
+        """
+        msg = request_pb2.BlockResolutionMessage()
+        try:
+            msg.ParseFromString(data)
+        except message.DecodeError:
+            return
+
+        for idx in msg.indices:
+            block_data = self.miner.get_resolution_block(idx)
+            if block_data is None:
+                # The index was invalid so close the connection and end the block resolution process
+                handler.request.close()
+                return
+
+            data = framing.frame_segment(block_data)
+            handler.send(data)
+
     def start_chain_resolution(self, peer_addr, chain):
         """
         Begin the chain resolution protocol for fetching all data
@@ -146,6 +176,11 @@ class Node:
         :param chain: The incomplete higher cost chain that requires resolution
         """
 
+        # Connect to the peer with the higher cost chain
+        # TODO Handle socket errors
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((peer_addr, Node.REQUEST_PORT))
+
         # Ask for the peer's block headers from the chain to find
         # the point where the current chain diverges from the higher
         # cost chain
@@ -154,9 +189,7 @@ class Node:
         req_data = req.SerializeToString()
         msg = framing.frame_segment(req_data)
 
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         logging.debug("Ask for resolution chain from: %s", peer_addr)
-        s.connect((peer_addr, Node.REQUEST_PORT))
         s.sendall(msg)
 
         # Receive the resolution chain from the peer
@@ -169,7 +202,7 @@ class Node:
 
         # Decode the resolution chain's protocol buffer
         try:
-            res_chain = Chain.decode(res_data)
+            res_chain = Chain.decode(res_data, False)
         except message.DecodeError:
             logging.error("Error decoding resolve chain: %s", res_data)
             return
@@ -182,9 +215,78 @@ class Node:
             logging.error("Invalid resolution chain")
             return
 
+        self.start_block_resolution(s, chain)
+
+    def start_block_resolution(self, sock, chain):
+        """
+        Start the block resolution process for the resolution chain. This
+        involves fetching the block data for any blocks in the chain that
+        are missing their body data. The miner will be notified once
+        the chain has all of its data complete.
+        :param sock: The socket to communicate with the peer who has the data.
+        :param chain: The chain that has missing block body data.
+        """
+
         res_block_indices = self.miner.get_resolution_block_indices(chain)
+
+        # If all the blocks have both their header and body data
+        # then the chain is complete and no block data needs resolving
+        if len(res_block_indices) == 0:
+            self.miner.receive_complete_chain(chain)
+            sock.close()
+            return
+
+        logging.debug("Ask for block bodies to populate the resolution chain")
+
+        # Fetch the bodies for any blocks in the chain that are missing them
+        msg = request_pb2.BlockResolutionMessage()
         for idx in res_block_indices:
-            # TODO Fetching of the block data for idx from s
-            pass
+            msg.indices.append(idx)
+        msg_data = msg.SerializeToString()
+
+        req = request_pb2.Request()
+        req.request_type = request_pb2.BLOCK_RESOLUTION
+        req.request_message = msg_data
+        req_data = req.SerializeToString()
+
+        data = framing.frame_segment(req_data)
+        sock.sendall(data)
+
+        try:
+            # Receive the block's body data in order by index
+            for idx in res_block_indices:
+
+                block_data = framing.receive_framed_segment(sock)
+
+                # The segment was empty meaning the connection was closed
+                # The peer will close the connection if an out of bounds block
+                # was requested
+                if block_data == b'':
+                    logging.error("Error: Connection closed due to out of bounds index while resolving block data.")
+                    # TODO Remove floating chain
+                    return
+                logging.debug("RECEIVED BLOCK DATA: %s", block_data)
+
+                block = Block.decode(block_data)
+
+                # Bail if adding the received block's data to the chain caused the block's chain of hashes to fail
+                if not self.miner.receive_resolution_block(block, idx, chain):
+                    logging.error("Error: Invalid resolution block hash for chain..")
+                    # TODO Remove floating chain
+                    return
+
+        # Unknown TCP error from the connection failing in the middle of receiving a message
+        # Stop block resolution due to losing connection with the peer
+        except RuntimeError:
+            logging.error("Error: Connection closed while resolving block data.")
+            # TODO Remove floating chain
+            return
+
+        # Stop block resolution due to a block failing to decode meaning an error occurred with the peer
+        except message.DecodeError:
+            logging.error("Error: Failed decoding resolution block.")
+            # TODO Remove floating chain
+            return
+        logging.debug("Received block resolution data and completed the chain")
 
         self.miner.receive_complete_chain(chain)

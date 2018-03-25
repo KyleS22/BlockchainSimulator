@@ -56,6 +56,7 @@ class Miner:
             with self.chain_lock:
                 if not self.dirty:
                     self.___add_block(cur)
+                    self.__notify_handlers(cur)
 
                 logging.debug("Valid chain: %s Cost: %d", self.chain.is_valid(), self.chain.get_cost())
 
@@ -91,7 +92,7 @@ class Miner:
 
                 logging.debug("Added valid remote block")
                 block.set_previous_hash(cur.hash())
-                self.chain.add(block)
+                self.___add_block(block)
                 self.dirty = True
 
             elif chain_cost == self.chain.get_cost() and block != cur:
@@ -113,6 +114,7 @@ class Miner:
                     block = self.chain.blocks[i]
                     chain.insert(i, block)
                 else:
+                    res_block.body = None
                     chain.insert(i, res_block)
                 i += 1
 
@@ -121,6 +123,16 @@ class Miner:
             logging.debug("Cur cost: %s New cost: %s", chain.get_cost(), self.chain.get_cost())
             self.floating_chains.remove(chain)
         return is_valid
+
+    def receive_resolution_block(self, block, idx, chain):
+        with self.chain_lock:
+
+            prev = chain.blocks[idx - 1]
+            if not block.is_valid(prev.hash()):
+                return False
+
+            block.set_previous_hash(prev.hash())
+            return chain.replace(idx, block)
 
     def get_resolution_block_indices(self, chain):
         """
@@ -132,15 +144,43 @@ class Miner:
         with self.chain_lock:
             return chain.get_bodiless_indices()
 
+    def get_resolution_block(self, idx):
+
+        block = self.get_block(idx)
+        if block is None:
+            return block
+        return block.encode()
+
+    def get_block(self, idx):
+        with self.chain_lock:
+            if idx < 0 or idx >= len(self.chain.blocks):
+                return None
+            return self.chain.blocks[idx]
+
+    def remove_floating_chain(self, chain):
+        with self.chain_lock:
+            self.floating_chains.remove(chain)
+
     def receive_complete_chain(self, chain):
         with self.chain_lock:
             self.__receive_complete_chain(chain)
 
     def __receive_complete_chain(self, chain):
+
         if chain.get_cost() > self.chain.get_cost():
             self.floating_chains.remove(chain)
             self.chain = chain
             self.dirty = True
+
+            with self.pending_blobs_lock:
+
+                # Add any blobs associated with removed blocks back to pending so they aren't lost
+                for block in self.chain.blocks:
+                    self.pending_blobs.union(block.get_body().blobs)
+
+                # Remove any pending blobs that have already been included in the new chain
+                for block in chain.blocks:
+                    self.pending_blobs.difference_update(block.get_body().blobs)
 
             logging.debug("Its longer. Replace the chain.")
 
@@ -181,11 +221,12 @@ class Miner:
         """
         self.chain.add(block)
 
-        for handler in self.mine_event:
-            handler(block, self.chain.get_cost())
-
         with self.pending_blobs_lock:
             self.pending_blobs.difference_update(block.get_body().blobs)
+
+    def __notify_handlers(self, block):
+        for handler in self.mine_event:
+            handler(block, self.chain.get_cost())
 
     def __compute_difficulty(self):
         """

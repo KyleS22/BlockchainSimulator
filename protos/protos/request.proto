@@ -6,6 +6,7 @@ enum RequestType {
 	MINED_BLOCK = 2;
 	DISOVERY = 3;
 	RESOLUTION = 4;
+	BLOCK_RESOLUTION = 5;
 }
 
 message Request {
@@ -25,4 +26,8 @@ message MinedBlockMessage {
 
 message DiscoveryMessage {
     fixed32 node_id = 1;
+}
+
+message BlockResolutionMessage {
+    repeated fixed32 indices = 1;
 }

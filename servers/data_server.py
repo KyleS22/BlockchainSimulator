@@ -14,6 +14,7 @@ class DataServer(server.TCPLineRequestHandler):
         """
         Receive binary data from an incoming TCP request that should be added to the block chain.
         :param data: The binary data to be added to the block chain.
+        :return: None
         """
         message = request_pb2.BlobMessage()
         message.timestamp = time.time()

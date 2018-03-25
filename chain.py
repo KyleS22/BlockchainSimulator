@@ -11,10 +11,11 @@ class Chain:
         return self.__cost
 
     @classmethod
-    def decode(cls, data):
+    def decode(cls, data, has_bodies):
         """
         Decode a chain from an encoded Chain protocol buffer.
         :param data: The encoded chain.
+        :param has_bodies: True if the encoded chain's blocks have their body data.
         :return: The decoded chain.
         :except: If decoding fails then a DecodeError is thrown.
         """
@@ -24,7 +25,7 @@ class Chain:
 
         chain = cls()
         for block_data in chain_data.blocks[1:]:
-            block = Block.decode(block_data)
+            block = Block.decode(block_data, has_bodies)
             chain.add(block)
 
         return chain
@@ -48,18 +49,39 @@ class Chain:
         debug_msg = "Add block to chain with nonce: %d blobs:" % block.get_nonce()
         util.log_collection(logging.DEBUG, debug_msg, block.get_body().blobs)
 
-        block_num = len(self.blocks)
-        for idx, blob in enumerate(block.get_body().blobs):
-            msg = request_pb2.BlobMessage()
-            msg.ParseFromString(blob)
-            self.mined_blobs[hash(msg.blob)].add((block_num, idx))
-
+        block_idx = len(self.blocks)
+        self.__add_mined_blobs(block_idx, block)
         self.__cost += block.get_cost()
         self.blocks.append(block)
 
     def insert(self, idx, block):
+
+        self.__add_mined_blobs(idx, block)
         self.__cost += block.get_cost()
         self.blocks.insert(idx, block)
+
+    def replace(self, idx, block):
+
+        if idx <= 0 or idx >= len(self.blocks):
+            return False
+
+        cur = self.blocks[idx]
+        if cur != block:
+            return False
+
+        cur.set_body(block.get_body())
+        self.__add_mined_blobs(idx, cur)
+        return True
+
+    def __add_mined_blobs(self, block_idx, block):
+
+        if not block.has_body():
+            return
+
+        for idx, blob in enumerate(block.get_body().blobs):
+            msg = request_pb2.BlobMessage()
+            msg.ParseFromString(blob)
+            self.mined_blobs[hash(msg.blob)].add((block_idx, idx))
 
     def next(self, difficulty, blobs):
         """

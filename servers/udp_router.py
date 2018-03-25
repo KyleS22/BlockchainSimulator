@@ -3,7 +3,8 @@ from servers import server
 
 class UDPRouter(server.UDPRequestHandler):
     """
-    The UDP router for handling requests from nodes in the peer to peer network.
+    The UDP router for handling requests from nodes in the peer to peer network and passing them
+    to the router to be routed to the node's corresponding handler.
     """
 
     def __init__(self, request, client_address, serv):
@@ -11,7 +12,8 @@ class UDPRouter(server.UDPRequestHandler):
 
     def receive(self, data):
         """
-        Called by the server when a new message is received
-        :param data: The data received
+        Received binary messages from other nodes in the peer to peer network.
+        :param data: The binary data which should be decodable using the Request protocol buffer.
+        :return: None
         """
         self.server.router.parse(data, self)

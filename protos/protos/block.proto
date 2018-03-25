@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+message BlockHeader {
+    fixed32 entropy = 1;
+    double timestamp = 2;
+    fixed32 difficulty = 3;
+    bytes body_hash = 4;
+}
+
+message BlockBody {
+    repeated bytes blobs = 1;
+}
+
+message Block {
+    fixed32 nonce = 1;
+    bytes prev_hash = 2;
+    BlockHeader header = 3;
+    BlockBody body = 4;
+}

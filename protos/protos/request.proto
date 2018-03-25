@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+enum RequestType {
+	BLOB = 0;
+	ALIVE = 1;
+	MINED_BLOCK = 2;
+	DISOVERY = 3;
+	RESOLUTION = 4;
+	BLOCK_RESOLUTION = 5;
+}
+
+message Request {
+	RequestType request_type = 1;
+	bytes request_message = 2;
+}
+
+message BlobMessage {
+    double timestamp = 1;
+    bytes blob = 2;
+}
+
+message MinedBlockMessage {
+    uint32 chain_cost = 1;
+    bytes block = 2;
+}
+
+message DiscoveryMessage {
+    fixed32 node_id = 1;
+}
+
+message BlockResolutionMessage {
+    repeated fixed32 indices = 1;
+}

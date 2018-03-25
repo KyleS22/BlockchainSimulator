@@ -236,11 +236,15 @@ class Node:
         the network to allow the current node to mine the correct chain.
         :param peer_addr: The address of the peer with the higher cost chain.
         :param chain: The incomplete higher cost chain that requires resolution.
+        :return: None
         """
         # Connect to the peer with the higher cost chain
-        # TODO Handle socket errors
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect((peer_addr, Node.REQUEST_PORT))
+        try:
+            s.connect((peer_addr, Node.REQUEST_PORT))
+        except socket.error:
+            logging.debug("Error: Unable to connect to peer for chain resolution.")
+            return
 
         # Ask for the peer's block headers from the chain to find
         # the point where the current chain diverges from the higher

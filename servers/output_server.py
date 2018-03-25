@@ -10,8 +10,8 @@ class OutputServer(server.TCPLineRequestHandler):
         """
         Receive binary data from an incoming TCP request that should be added to the block chain.
         :param data: The binary data to be added to the block chain.
+        :return: None
         """
-
         try:
             idx = int(data)
         except ValueError:

@@ -1,10 +1,14 @@
+import logging
 import socketserver
 import threading
-import logging
+
 import framing
 
 
 class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """
+    A TCP server for handling incoming TCP requests.
+    """
 
     def __init__(self, port, handler):
         socketserver.TCPServer.allow_reuse_address = True
@@ -13,15 +17,14 @@ class TCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
 class TCPRequestHandler(socketserver.BaseRequestHandler):
     """
-    Request handler for TCP data from other nodes sending messages in the network
+    A Request handler for handling streaming TCP data from other nodes sending messages in the network.
     """
 
     def handle(self):
         """
-        Called by the server to receive new data
+        Called by the server to receive new data.
         :return: None
         """
-
         try:
             data = framing.receive_framed_segment(self.request)
         except RuntimeError as err:
@@ -32,16 +35,16 @@ class TCPRequestHandler(socketserver.BaseRequestHandler):
 
     def receive(self, data):
         """
-        Process the new data. Implemented when subclassing this class
-        :param data: The data to be processed
+        Process the new data. Implemented when subclassing this class.
+        :param data: The data to be processed.
         :return: None
         """
         pass
 
     def send(self, data):
         """
-        Send the given data to the connection
-        :param data: The data to send
+        Send the given data to the connection.
+        :param data: The data to send.
         :return: None
         """
         self.request.sendall(data)
@@ -49,12 +52,12 @@ class TCPRequestHandler(socketserver.BaseRequestHandler):
 
 class TCPLineRequestHandler(socketserver.StreamRequestHandler):
     """
-    TCP request handler for incoming data from an external node
+    A TCP request handler for handling incoming data streams using new line character's for framing.
     """
 
     def handle(self):
         """
-        Called by the server to receive new data
+        Called by the server to receive new data.
         :return: None
         """
         data = self.rfile.readline()
@@ -62,7 +65,7 @@ class TCPLineRequestHandler(socketserver.StreamRequestHandler):
 
     def receive(self, data):
         """
-        Process the new data. Implemented when subclassing this class
+        Process the new data. Implemented when subclassing this class.
         :param data: The data to be processed
         :return: None
         """
@@ -70,8 +73,8 @@ class TCPLineRequestHandler(socketserver.StreamRequestHandler):
 
     def send(self, data):
         """
-        Send the given data to the connection
-        :param data: The data to send
+        Send the given data to the connection.
+        :param data: The data to send.
         :return: None
         """
         self.request.sendall(data)
@@ -79,7 +82,7 @@ class TCPLineRequestHandler(socketserver.StreamRequestHandler):
 
 class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
     """
-    A UDP server...
+    A UDP server for handling incoming UDP requests.
     """
 
     def __init__(self, port, handler, node_id=None):
@@ -90,7 +93,7 @@ class UDPServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
 
 class UDPRequestHandler(socketserver.DatagramRequestHandler):
     """
-    Request handler for the UDP server.
+    A Request handler for handling UDP datagrams from other nodes sending messages in the network.
     """
 
     def handle(self):
@@ -115,6 +118,7 @@ def start_server(server):
     """
     Start a TCP or UDP server in a background thread.
     :param server: The server to be started.
+    :return: None
     """
     thread = threading.Thread(target=server.serve_forever)
     thread.daemon = True

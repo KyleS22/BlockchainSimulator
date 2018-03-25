@@ -3,12 +3,12 @@ from servers import server
 
 class OutputServer(server.TCPLineRequestHandler):
     """
-    The data server for receiving incoming TCP binary data from outside the peer to peer network.
+    The data server for receiving incoming TCP requests for block data.
     """
 
     def receive(self, data):
         """
-        Receive binary data from an incoming TCP request that should be added to the block chain.
+        Receive a request for block data.
         :param data: The binary data to be added to the block chain.
         :return: None
         """

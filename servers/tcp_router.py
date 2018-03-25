@@ -12,7 +12,7 @@ class TCPRouter(server.TCPRequestHandler):
 
     def receive(self, data):
         """
-        Received binary messages from other nodes in the peer to peer network.
+        Receive binary messages from other nodes in the peer to peer network.
         :param data: The binary data which should be decodable using the Request protocol buffer.
         :return: None
         """

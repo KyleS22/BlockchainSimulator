@@ -1,21 +1,23 @@
+import logging
 import socket
 import threading
-from protos import request_pb2
-import logging
 import time
-import util
+
+from protos import request_pb2
 
 
 class Heartbeat:
     """
-    Broadcasts to all nodes on network and waits for response
+    The heartbeat server to broadcast to all nodes in the peer to peer network to
+    communicate that the node is still alive and part of the network.
     """
 
     def __init__(self, port, heartbeat, node_id):
         """
-        Constructor for discovery
-        :param listen_port: The port to listen for UDP packets on
-        :param tcp_port: The port to use to create new TCP connections
+        :param port: The port to transmit heartbeats on.
+        :param heartbeat: The interval between heartbeats.
+        :param node_id: The unique identifier for the current node that the heartbeat contains.
+        :return: None
         """
         self.heartbeat = heartbeat
         self.broadcast_port = port
@@ -23,8 +25,7 @@ class Heartbeat:
 
     def broadcast_thread(self):
         """
-        Thread logic for broadcasting
-        :param port: The port to send to
+        The thread that broadcasts the heartbeat to all peers in the network.
         :return: None
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -46,7 +47,7 @@ class Heartbeat:
 
     def start(self):
         """
-         Start the discovery heartbeat in a new thread.
+         Starts the heartbeat thread.
          """
         thread = threading.Thread(target=self.broadcast_thread)
         thread.daemon = True

@@ -56,6 +56,7 @@ class Miner:
             with self.chain_lock:
                 if not self.dirty:
                     self.___add_block(cur)
+                    self.__notify_handlers(cur)
 
                 logging.debug("Valid chain: %s Cost: %d", self.chain.is_valid(), self.chain.get_cost())
 
@@ -91,7 +92,7 @@ class Miner:
 
                 logging.debug("Added valid remote block")
                 block.set_previous_hash(cur.hash())
-                self.chain.add(block)
+                self.___add_block(block)
                 self.dirty = True
 
             elif chain_cost == self.chain.get_cost() and block != cur:
@@ -198,11 +199,12 @@ class Miner:
         """
         self.chain.add(block)
 
-        for handler in self.mine_event:
-            handler(block, self.chain.get_cost())
-
         with self.pending_blobs_lock:
             self.pending_blobs.difference_update(block.get_body().blobs)
+
+    def __notify_handlers(self, block):
+        for handler in self.mine_event:
+            handler(block, self.chain.get_cost())
 
     def __compute_difficulty(self):
         """

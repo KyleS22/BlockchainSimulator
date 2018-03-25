@@ -150,6 +150,10 @@ class Miner:
                 return None
             return self.chain.blocks[idx].encode()
 
+    def remove_floating_chain(self, chain):
+        with self.chain_lock:
+            self.floating_chains.remove(chain)
+
     def receive_complete_chain(self, chain):
         with self.chain_lock:
             self.__receive_complete_chain(chain)

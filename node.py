@@ -263,7 +263,7 @@ class Node:
                 # was requested
                 if block_data == b'':
                     logging.error("Error: Connection closed due to out of bounds index while resolving block data.")
-                    # TODO Remove floating chain
+                    self.miner.remove_floating_chain(chain)
                     return
 
                 block = Block.decode(block_data)
@@ -271,20 +271,20 @@ class Node:
                 # Bail if adding the received block's data to the chain caused the block's chain of hashes to fail
                 if not self.miner.receive_resolution_block(block, idx, chain):
                     logging.error("Error: Invalid resolution block hash for chain..")
-                    # TODO Remove floating chain
+                    self.miner.remove_floating_chain(chain)
                     return
 
         # Unknown TCP error from the connection failing in the middle of receiving a message
         # Stop block resolution due to losing connection with the peer
         except RuntimeError:
             logging.error("Error: Connection closed while resolving block data.")
-            # TODO Remove floating chain
+            self.miner.remove_floating_chain(chain)
             return
 
         # Stop block resolution due to a block failing to decode meaning an error occurred with the peer
         except message.DecodeError:
             logging.error("Error: Failed decoding resolution block.")
-            # TODO Remove floating chain
+            self.miner.remove_floating_chain(chain)
             return
         logging.debug("Received block resolution data and completed the chain")
 

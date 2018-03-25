@@ -16,4 +16,4 @@ class TCPRouter(server.TCPRequestHandler):
         :param data: The binary data which should be decodable using the Request protocol buffer.
         :return: None
         """
-        self.server.router.parse(data, self)
+        self.server.router.route(data, self)

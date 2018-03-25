@@ -155,10 +155,21 @@ class Miner:
             self.__receive_complete_chain(chain)
 
     def __receive_complete_chain(self, chain):
+
         if chain.get_cost() > self.chain.get_cost():
             self.floating_chains.remove(chain)
             self.chain = chain
             self.dirty = True
+
+            with self.pending_blobs_lock:
+
+                # Add any blobs associated with removed blocks back to pending so they aren't lost
+                for block in self.chain.blocks:
+                    self.pending_blobs.union(block.get_body().blobs)
+
+                # Remove any pending blobs that have already been included in the new chain
+                for block in chain.blocks:
+                    self.pending_blobs.difference_update(block.get_body().blobs)
 
             logging.debug("Its longer. Replace the chain.")
 

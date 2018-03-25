@@ -1,6 +1,7 @@
 from secrets import randbits
 from hashlib import sha256
-from protos import block_pb2
+from protos import block_pb2, request_pb2
+from google.protobuf import message
 import time
 import copy
 import logging
@@ -226,3 +227,18 @@ class Block:
             if byte & (0x80 >> (i % 8)) != 0:
                 return False
         return True
+
+    def to_ascii(self):
+
+        if len(self.body.blobs) == 0:
+            return "{}\n"
+        lines = "{\n"
+        for blob in self.body.blobs:
+            msg = request_pb2.BlobMessage()
+            try:
+                msg.ParseFromString(blob)
+            except message.DecodeError:
+                logging.error("Error: Failed to convert blob to ASCII.")
+                continue
+            lines += "\t" + "timestamp: " + str(msg.timestamp) + " blob: " + msg.blob.decode()
+        return lines + "}\n"

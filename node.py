@@ -1,6 +1,7 @@
 from miner import Miner
 from servers import server
 from servers.data_server import DataServer
+from servers.output_server import OutputServer
 from servers.tcp_router import TCPRouter
 from servers.udp_router import UDPRouter
 from protos import request_pb2
@@ -25,12 +26,12 @@ class Node:
         Initialize the servers and miner required for a peer to peer node to operate.
         """
         logging.debug("\n\n\n STARTING")
-        node_id = randbits(32) # Create a unique ID for this node
-        self.node_pool = NodePool(node_id, 30, 105)
+        self.node_id = randbits(32) # Create a unique ID for this node
+        self.node_pool = NodePool(self.node_id, 30, 105)
 
         self.miner = Miner()
         self.miner.mine_event.append(self.block_mined)
-        self.heartbeat = p2p.Heartbeat(Node.REQUEST_PORT, 30, node_id)
+        self.heartbeat = p2p.Heartbeat(Node.REQUEST_PORT, 30, self.node_id)
 
         router = RequestRouter(self)
         router.handlers[request_pb2.BLOB] = self.handle_blob
@@ -47,6 +48,9 @@ class Node:
 
         self.input_server = server.TCPServer(9999, DataServer)
         self.input_server.node = self
+
+        self.output_server = server.TCPServer(9998, OutputServer)
+        self.output_server.node = self
 
     def block_mined(self, block, chain_cost):
 
@@ -70,6 +74,7 @@ class Node:
 
         server.start_server(self.tcp_router)
         server.start_server(self.input_server)
+        server.start_server(self.output_server)
         server.start_server(self.udp_router)
 
         self.heartbeat.start()
@@ -81,6 +86,9 @@ class Node:
 
         self.input_server.shutdown()
         self.input_server.server_close()
+
+        self.output_server.shutdown()
+        self.output_server.server_close()
 
         self.udp_router.shutdown()
         self.udp_router.server_close()
@@ -109,6 +117,15 @@ class Node:
             return
 
         self.node_pool.add(msg.node_id, handler.client_address[0])
+
+    def handle_output_request(self, idx, handler):
+        block = self.miner.get_block(idx)
+        if block is None:
+            handler.send("Index out of bounds.\n".encode())
+            return
+
+        output = str(self.node_id) + " : " + block.to_ascii()
+        handler.send(output.encode())
 
     def handle_mined_block(self, data, handler):
         logging.debug("Got mined block")

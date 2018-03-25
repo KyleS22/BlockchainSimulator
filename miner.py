@@ -145,10 +145,17 @@ class Miner:
             return chain.get_bodiless_indices()
 
     def get_resolution_block(self, idx):
+
+        block = self.get_block(idx)
+        if block is None:
+            return block
+        return block.encode()
+
+    def get_block(self, idx):
         with self.chain_lock:
-            if idx <= 0 or idx >= len(self.chain.blocks):
+            if idx < 0 or idx >= len(self.chain.blocks):
                 return None
-            return self.chain.blocks[idx].encode()
+            return self.chain.blocks[idx]
 
     def remove_floating_chain(self, chain):
         with self.chain_lock:

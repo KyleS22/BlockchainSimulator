@@ -49,18 +49,22 @@ class Chain:
         debug_msg = "Add block to chain with nonce: %d blobs:" % block.get_nonce()
         util.log_collection(logging.DEBUG, debug_msg, block.get_body().blobs)
 
-        block_num = len(self.blocks)
-        for idx, blob in enumerate(block.get_body().blobs):
-            msg = request_pb2.BlobMessage()
-            msg.ParseFromString(blob)
-            self.mined_blobs[hash(msg.blob)].add((block_num, idx))
-
+        block_idx = len(self.blocks)
+        self.__add_mined_blobs(block_idx, block)
         self.__cost += block.get_cost()
         self.blocks.append(block)
 
     def insert(self, idx, block):
+
+        self.__add_mined_blobs(idx, block)
         self.__cost += block.get_cost()
         self.blocks.insert(idx, block)
+
+    def __add_mined_blobs(self, block_idx, block):
+        for idx, blob in enumerate(block.get_body().blobs):
+            msg = request_pb2.BlobMessage()
+            msg.ParseFromString(blob)
+            self.mined_blobs[hash(msg.blob)].add((block_idx, idx))
 
     def next(self, difficulty, blobs):
         """

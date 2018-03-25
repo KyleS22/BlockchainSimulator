@@ -1,32 +1,40 @@
+import logging
+import socket
+from secrets import randbits
+
+from google.protobuf import message
+
+import framing
+import peer_to_peer_discovery as p2p
+from block import Block
+from chain import Chain
 from miner import Miner
+from node_pool import NodePool
+from protos import request_pb2
+from requests import RequestRouter
 from servers import server
 from servers.data_server import DataServer
 from servers.output_server import OutputServer
 from servers.tcp_router import TCPRouter
 from servers.udp_router import UDPRouter
-from protos import request_pb2
-from google.protobuf import message
-from secrets import randbits
-import peer_to_peer_discovery as p2p
-from node_pool import NodePool
-from requests import RequestRouter
-from block import Block
-import logging
-import socket
-from chain import Chain
-import framing
 
 
 class Node:
+    """
+    The node class used to manage communication between other nodes in the peer to peer network and the miner
+    that is being run on this node.
+    """
 
+    """
+    The port that nodes in the network use to communicate with one another.
+    """
     REQUEST_PORT = 10000
 
     def __init__(self):
         """
         Initialize the servers and miner required for a peer to peer node to operate.
         """
-        logging.debug("\n\n\n STARTING")
-        self.node_id = randbits(32) # Create a unique ID for this node
+        self.node_id = randbits(32)  # Create a unique ID for this node
         self.node_pool = NodePool(self.node_id, 30, 105)
 
         self.miner = Miner()
@@ -53,7 +61,13 @@ class Node:
         self.output_server.node = self
 
     def block_mined(self, block, chain_cost):
-
+        """
+        The block mined callback that is called when the miner has succeeded in mining a block and adding it
+        to the end of the current chain.
+        :param block: The block that was mined.
+        :param chain_cost: The total cost of the currently mined chain.
+        :return: None
+        """
         msg = request_pb2.MinedBlockMessage()
         msg.chain_cost = chain_cost
         msg.block = block.encode()
@@ -81,6 +95,10 @@ class Node:
         self.miner.mine()
 
     def shutdown(self):
+        """
+        Shutdown the all TCP and UDP servers when the node is shutdown to ensure that all ports are properly closed.
+        :return: None
+        """
         self.tcp_router.shutdown()
         self.tcp_router.server_close()
 
@@ -94,6 +112,13 @@ class Node:
         self.udp_router.server_close()
 
     def handle_blob(self, data, handler):
+        """
+        Handle a binary object that has been submitted to the block chain network by an outside client. This
+        data will be forwarded to this nodes peers.
+        :param data: The binary data that has been submitted to be added to the block chain.
+        :param handler: The handler that received the message.
+        :return: 
+        """
         logging.debug("Got a blob " + str(data))
 
         if self.miner.add(data):
@@ -108,6 +133,12 @@ class Node:
             logging.debug("received duplicate blob")
 
     def handle_discovery(self, data, handler):
+        """
+        Handle a discovery message from a peer in the block chain network when it broadcasts that it is still alive.
+        :param data: The discovery message containing the peer's unique identifier.
+        :param handler: The handler that received the message.
+        :return: None
+        """
         logging.debug("Got discovery message")
         msg = request_pb2.DiscoveryMessage()
         try:
@@ -119,6 +150,13 @@ class Node:
         self.node_pool.add(msg.node_id, handler.client_address[0])
 
     def handle_output_request(self, idx, handler):
+        """
+        Handle an output request from a client outside the network that is requesting the data in a specific
+        block within the block chain.
+        :param idx: The index in the block chain of the block who's data is being requested.
+        :param handler: The handler that received the client's request.
+        :return: None
+        """
         block = self.miner.get_block(idx)
         if block is None:
             handler.send("Index out of bounds.\n".encode())
@@ -128,6 +166,12 @@ class Node:
         handler.send(output.encode())
 
     def handle_mined_block(self, data, handler):
+        """
+        Handle a message from a peer in the network notifying the current node that it mined a block.
+        :param data: The data containing the data for the block that was mined.
+        :param handler: The handler that received the message.
+        :return: None
+        """
         logging.debug("Got mined block")
         msg = request_pb2.MinedBlockMessage()
         try:
@@ -145,12 +189,14 @@ class Node:
 
     def handle_resolution(self, data, handler):
         """
-        Handle a resolution message from a peer when a peer asks
-        for the block header's for the this peer's higher cost chain by
-        sending back the current chain's block headers.
-        :param data:  The message data which is unused because the resolution message
-                        only depends on the message type, not the body.
-        :param handler: The TCP handler that received the resolution message.
+        Handles a resolution message from a peer in the network when the peer asks for the current node's
+        resolution chain. This causes the current node to send the headers for all blocks in the chain to
+        allow the peer to undergo chain resolution so that the peer can determine if it should replace its
+        chain with the chain currently being worked on by this node.
+        :param data:  The message data which is unused because the resolution message only depends on the 
+        message type, not the body.
+        :param handler: The handler that received the message.
+        :return: None
         """
         res_chain = self.miner.get_resolution_chain()
         msg = framing.frame_segment(res_chain)
@@ -162,11 +208,11 @@ class Node:
 
     def handle_block_resolution(self, data, handler):
         """
-        Handle the block resolution message which provides a list of
-        indices for which to fetch block data.
-        :param data: The block resolution message containing the block indices
-                        for which to fetch the body data.
-        :param handler: The handler that manages the connection with the peer.
+        Handle a block resolution message from a peer in the network to fetch the block body data for
+        all block's whose indices are provided in the message data.
+        :param data: The block resolution message containing the block indices for which to fetch the body data.
+        :param handler: The handler that received the message.
+        :return: None
         """
         msg = request_pb2.BlockResolutionMessage()
         try:
@@ -186,13 +232,11 @@ class Node:
 
     def start_chain_resolution(self, peer_addr, chain):
         """
-        Begin the chain resolution protocol for fetching all data
-        associated with a higher cost chain in the network to allow
-        the current node to mine the correct chain.
-        :param peer_addr: The address of the peer with the higher cost chain
-        :param chain: The incomplete higher cost chain that requires resolution
+        Begin the chain resolution protocol for fetching all data associated with a higher cost chain in 
+        the network to allow the current node to mine the correct chain.
+        :param peer_addr: The address of the peer with the higher cost chain.
+        :param chain: The incomplete higher cost chain that requires resolution.
         """
-
         # Connect to the peer with the higher cost chain
         # TODO Handle socket errors
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -236,14 +280,13 @@ class Node:
 
     def start_block_resolution(self, sock, chain):
         """
-        Start the block resolution process for the resolution chain. This
-        involves fetching the block data for any blocks in the chain that
-        are missing their body data. The miner will be notified once
-        the chain has all of its data complete.
+        Start the block resolution process for the resolution chain. This involves fetching the block data for 
+        any blocks in the chain that are missing their body data. The miner will be notified once the chain has 
+        all of its data complete.
         :param sock: The socket to communicate with the peer who has the data.
         :param chain: The chain that has missing block body data.
+        :return: None
         """
-
         res_block_indices = self.miner.get_resolution_block_indices(chain)
 
         # If all the blocks have both their header and body data

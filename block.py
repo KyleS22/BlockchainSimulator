@@ -3,6 +3,7 @@ from hashlib import sha256
 from protos import block_pb2
 import time
 import copy
+import logging
 
 
 class BlockBuilder:
@@ -77,6 +78,12 @@ class Block:
         :return: Returns True if the block has its body data; otherwise, False is returned
         """
         return self.body is not None
+
+    def set_body(self, body):
+        if self.header.body_hash != sha256(body.SerializeToString()).digest():
+            logging.error("Error: Set body called with data that doesn't match the body hash.")
+            return
+        self.body = body
 
     def get_cost(self):
         """

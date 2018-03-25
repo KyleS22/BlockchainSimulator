@@ -60,7 +60,24 @@ class Chain:
         self.__cost += block.get_cost()
         self.blocks.insert(idx, block)
 
+    def replace(self, idx, block):
+
+        if idx <= 0 or idx >= len(self.blocks):
+            return False
+
+        cur = self.blocks[idx]
+        if cur != block:
+            return False
+
+        cur.set_body(block.get_body())
+        self.__add_mined_blobs(idx, cur)
+        return True
+
     def __add_mined_blobs(self, block_idx, block):
+
+        if not block.has_body():
+            return
+
         for idx, blob in enumerate(block.get_body().blobs):
             msg = request_pb2.BlobMessage()
             msg.ParseFromString(blob)

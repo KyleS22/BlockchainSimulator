@@ -265,7 +265,6 @@ class Node:
                     logging.error("Error: Connection closed due to out of bounds index while resolving block data.")
                     # TODO Remove floating chain
                     return
-                logging.debug("RECEIVED BLOCK DATA: %s", block_data)
 
                 block = Block.decode(block_data)
 

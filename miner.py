@@ -126,13 +126,13 @@ class Miner:
 
     def receive_resolution_block(self, block, idx, chain):
         with self.chain_lock:
-            cur = chain.blocks[idx - 1]
-            if not block.is_valid(cur.hash()):
+
+            prev = chain.blocks[idx - 1]
+            if not block.is_valid(prev.hash()):
                 return False
 
-            block.set_previous_hash(cur.hash())
-            chain.blocks[idx] = block
-            return True
+            block.set_previous_hash(prev.hash())
+            return chain.replace(idx, block)
 
     def get_resolution_block_indices(self, chain):
         """

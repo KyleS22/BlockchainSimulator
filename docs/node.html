@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module node</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>node</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../node.py">node.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="framing.html">framing</a><br>
+<a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="https://developers.google.com/protocol-buffers/docs/reference/cpp/google.protobuf.message">google.protobuf.message</a><br>
+<a href="peer_to_peer_discovery.html">peer_to_peer_discovery</a><br>
+<a href="servers.server.html">servers.server</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/socket.html">socket</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial">
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="node.html#Node">Node</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Node">class <strong>Node</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;node&nbsp;class&nbsp;used&nbsp;to&nbsp;manage&nbsp;communication&nbsp;between&nbsp;other&nbsp;nodes&nbsp;in&nbsp;the&nbsp;peer&nbsp;to&nbsp;peer&nbsp;network&nbsp;and&nbsp;the&nbsp;miner<br>
+that&nbsp;is&nbsp;being&nbsp;run&nbsp;on&nbsp;this&nbsp;node.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Node-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;the&nbsp;servers&nbsp;and&nbsp;miner&nbsp;required&nbsp;for&nbsp;a&nbsp;peer&nbsp;to&nbsp;peer&nbsp;node&nbsp;to&nbsp;operate.</tt></dd></dl>
+
+<dl><dt><a name="Node-block_mined"><strong>block_mined</strong></a>(self, block, chain_cost)</dt><dd><tt>The&nbsp;block&nbsp;mined&nbsp;callback&nbsp;that&nbsp;is&nbsp;called&nbsp;when&nbsp;the&nbsp;miner&nbsp;has&nbsp;succeeded&nbsp;in&nbsp;mining&nbsp;a&nbsp;block&nbsp;and&nbsp;adding&nbsp;it<br>
+to&nbsp;the&nbsp;end&nbsp;of&nbsp;the&nbsp;current&nbsp;chain.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;that&nbsp;was&nbsp;mined.<br>
+:param&nbsp;chain_cost:&nbsp;The&nbsp;total&nbsp;cost&nbsp;of&nbsp;the&nbsp;currently&nbsp;mined&nbsp;chain.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_blob"><strong>handle_blob</strong></a>(self, data, handler)</dt><dd><tt>Handle&nbsp;a&nbsp;binary&nbsp;&nbsp;that&nbsp;has&nbsp;been&nbsp;submitted&nbsp;to&nbsp;the&nbsp;block&nbsp;chain&nbsp;network&nbsp;by&nbsp;an&nbsp;outside&nbsp;client.&nbsp;This<br>
+data&nbsp;will&nbsp;be&nbsp;forwarded&nbsp;to&nbsp;this&nbsp;nodes&nbsp;peers.<br>
+:param&nbsp;data:&nbsp;The&nbsp;binary&nbsp;data&nbsp;that&nbsp;has&nbsp;been&nbsp;submitted&nbsp;to&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;block&nbsp;chain.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message.<br>
+:return:</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_block_resolution"><strong>handle_block_resolution</strong></a>(self, data, handler)</dt><dd><tt>Handle&nbsp;a&nbsp;block&nbsp;resolution&nbsp;message&nbsp;from&nbsp;a&nbsp;peer&nbsp;in&nbsp;the&nbsp;network&nbsp;to&nbsp;fetch&nbsp;the&nbsp;block&nbsp;body&nbsp;data&nbsp;for<br>
+all&nbsp;block's&nbsp;whose&nbsp;indices&nbsp;are&nbsp;provided&nbsp;in&nbsp;the&nbsp;message&nbsp;data.<br>
+:param&nbsp;data:&nbsp;The&nbsp;block&nbsp;resolution&nbsp;message&nbsp;containing&nbsp;the&nbsp;block&nbsp;indices&nbsp;for&nbsp;which&nbsp;to&nbsp;fetch&nbsp;the&nbsp;body&nbsp;data.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_discovery"><strong>handle_discovery</strong></a>(self, data, handler)</dt><dd><tt>Handle&nbsp;a&nbsp;discovery&nbsp;message&nbsp;from&nbsp;a&nbsp;peer&nbsp;in&nbsp;the&nbsp;block&nbsp;chain&nbsp;network&nbsp;when&nbsp;it&nbsp;broadcasts&nbsp;that&nbsp;it&nbsp;is&nbsp;still&nbsp;alive.<br>
+:param&nbsp;data:&nbsp;The&nbsp;discovery&nbsp;message&nbsp;containing&nbsp;the&nbsp;peer's&nbsp;unique&nbsp;identifier.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_mined_block"><strong>handle_mined_block</strong></a>(self, data, handler)</dt><dd><tt>Handle&nbsp;a&nbsp;message&nbsp;from&nbsp;a&nbsp;peer&nbsp;in&nbsp;the&nbsp;network&nbsp;notifying&nbsp;the&nbsp;current&nbsp;node&nbsp;that&nbsp;it&nbsp;mined&nbsp;a&nbsp;block.<br>
+:param&nbsp;data:&nbsp;The&nbsp;data&nbsp;containing&nbsp;the&nbsp;data&nbsp;for&nbsp;the&nbsp;block&nbsp;that&nbsp;was&nbsp;mined.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_output_request"><strong>handle_output_request</strong></a>(self, idx, handler)</dt><dd><tt>Handle&nbsp;an&nbsp;output&nbsp;request&nbsp;from&nbsp;a&nbsp;client&nbsp;outside&nbsp;the&nbsp;network&nbsp;that&nbsp;is&nbsp;requesting&nbsp;the&nbsp;data&nbsp;in&nbsp;a&nbsp;specific<br>
+block&nbsp;within&nbsp;the&nbsp;block&nbsp;chain.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;in&nbsp;the&nbsp;block&nbsp;chain&nbsp;of&nbsp;the&nbsp;block&nbsp;who's&nbsp;data&nbsp;is&nbsp;being&nbsp;requested.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;client's&nbsp;request.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-handle_resolution"><strong>handle_resolution</strong></a>(self, data, handler)</dt><dd><tt>Handles&nbsp;a&nbsp;resolution&nbsp;message&nbsp;from&nbsp;a&nbsp;peer&nbsp;in&nbsp;the&nbsp;network&nbsp;when&nbsp;the&nbsp;peer&nbsp;asks&nbsp;for&nbsp;the&nbsp;current&nbsp;node's<br>
+resolution&nbsp;chain.&nbsp;This&nbsp;causes&nbsp;the&nbsp;current&nbsp;node&nbsp;to&nbsp;send&nbsp;the&nbsp;headers&nbsp;for&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;to<br>
+allow&nbsp;the&nbsp;peer&nbsp;to&nbsp;undergo&nbsp;chain&nbsp;resolution&nbsp;so&nbsp;that&nbsp;the&nbsp;peer&nbsp;can&nbsp;determine&nbsp;if&nbsp;it&nbsp;should&nbsp;replace&nbsp;its<br>
+chain&nbsp;with&nbsp;the&nbsp;chain&nbsp;currently&nbsp;being&nbsp;worked&nbsp;on&nbsp;by&nbsp;this&nbsp;node.<br>
+:param&nbsp;data:&nbsp;&nbsp;The&nbsp;message&nbsp;data&nbsp;which&nbsp;is&nbsp;unused&nbsp;because&nbsp;the&nbsp;resolution&nbsp;message&nbsp;only&nbsp;depends&nbsp;on&nbsp;the&nbsp;<br>
+message&nbsp;type,&nbsp;not&nbsp;the&nbsp;body.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-run"><strong>run</strong></a>(self)</dt><dd><tt>Run&nbsp;the&nbsp;servers&nbsp;for&nbsp;receiving&nbsp;incoming&nbsp;requests&nbsp;and&nbsp;start&nbsp;mining.<br>
+This&nbsp;method&nbsp;never&nbsp;returns.</tt></dd></dl>
+
+<dl><dt><a name="Node-shutdown"><strong>shutdown</strong></a>(self)</dt><dd><tt>Shutdown&nbsp;the&nbsp;all&nbsp;TCP&nbsp;and&nbsp;UDP&nbsp;servers&nbsp;when&nbsp;the&nbsp;node&nbsp;is&nbsp;shutdown&nbsp;to&nbsp;ensure&nbsp;that&nbsp;all&nbsp;ports&nbsp;are&nbsp;properly&nbsp;closed.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-start_block_resolution"><strong>start_block_resolution</strong></a>(self, sock, chain)</dt><dd><tt>Start&nbsp;the&nbsp;block&nbsp;resolution&nbsp;process&nbsp;for&nbsp;the&nbsp;resolution&nbsp;chain.&nbsp;This&nbsp;involves&nbsp;fetching&nbsp;the&nbsp;block&nbsp;data&nbsp;for&nbsp;<br>
+any&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;that&nbsp;are&nbsp;missing&nbsp;their&nbsp;body&nbsp;data.&nbsp;The&nbsp;miner&nbsp;will&nbsp;be&nbsp;notified&nbsp;once&nbsp;the&nbsp;chain&nbsp;has&nbsp;<br>
+all&nbsp;of&nbsp;its&nbsp;data&nbsp;complete.<br>
+:param&nbsp;sock:&nbsp;The&nbsp;socket&nbsp;to&nbsp;communicate&nbsp;with&nbsp;the&nbsp;peer&nbsp;who&nbsp;has&nbsp;the&nbsp;data.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;chain&nbsp;that&nbsp;has&nbsp;missing&nbsp;block&nbsp;body&nbsp;data.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Node-start_chain_resolution"><strong>start_chain_resolution</strong></a>(self, peer_addr, chain)</dt><dd><tt>Begin&nbsp;the&nbsp;chain&nbsp;resolution&nbsp;protocol&nbsp;for&nbsp;fetching&nbsp;all&nbsp;data&nbsp;associated&nbsp;with&nbsp;a&nbsp;higher&nbsp;cost&nbsp;chain&nbsp;in&nbsp;<br>
+the&nbsp;network&nbsp;to&nbsp;allow&nbsp;the&nbsp;current&nbsp;node&nbsp;to&nbsp;mine&nbsp;the&nbsp;correct&nbsp;chain.<br>
+:param&nbsp;peer_addr:&nbsp;The&nbsp;address&nbsp;of&nbsp;the&nbsp;peer&nbsp;with&nbsp;the&nbsp;higher&nbsp;cost&nbsp;chain.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;incomplete&nbsp;higher&nbsp;cost&nbsp;chain&nbsp;that&nbsp;requires&nbsp;resolution.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>REQUEST_PORT</strong> = 10000</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

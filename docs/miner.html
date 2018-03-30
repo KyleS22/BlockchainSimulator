@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module miner</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>miner</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../miner.py">miner.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/math.html">math</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/threading.html">threading</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial">
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="miner.html#Miner">Miner</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Miner">class <strong>Miner</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;miner&nbsp;that&nbsp;stores&nbsp;the&nbsp;current&nbsp;chain&nbsp;that&nbsp;blocks&nbsp;are&nbsp;being&nbsp;mined&nbsp;for,&nbsp;searches&nbsp;for&nbsp;nonces&nbsp;that&nbsp;allow<br>
+the&nbsp;next&nbsp;block&nbsp;to&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;chain,&nbsp;and&nbsp;track&nbsp;other&nbsp;chains&nbsp;that&nbsp;may&nbsp;have&nbsp;higher&nbsp;difficulties&nbsp;than<br>
+the&nbsp;current&nbsp;chain&nbsp;that&nbsp;are&nbsp;in&nbsp;the&nbsp;process&nbsp;of&nbsp;chain&nbsp;resolution.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Miner-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Miner-add"><strong>add</strong></a>(self, msg)</dt><dd><tt>Add&nbsp;a&nbsp;Blob&nbsp;Message&nbsp;to&nbsp;the&nbsp;set&nbsp;of&nbsp;pending&nbsp;blobs&nbsp;to&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;body&nbsp;of&nbsp;the&nbsp;next&nbsp;block&nbsp;that&nbsp;is&nbsp;created.<br>
+:param&nbsp;msg:&nbsp;The&nbsp;Blob&nbsp;Message&nbsp;as&nbsp;an&nbsp;encoded&nbsp;BlobMessage&nbsp;protocol&nbsp;buffer&nbsp;&nbsp;consisting&nbsp;of&nbsp;a&nbsp;timestamp<br>
+and&nbsp;binary&nbsp;data.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Miner-get_block"><strong>get_block</strong></a>(self, idx)</dt><dd><tt>Get&nbsp;the&nbsp;Block&nbsp;at&nbsp;the&nbsp;specified&nbsp;index.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;of&nbsp;the&nbsp;block&nbsp;to&nbsp;get.<br>
+:return:&nbsp;The&nbsp;block&nbsp;at&nbsp;the&nbsp;specified&nbsp;index&nbsp;or&nbsp;None&nbsp;if&nbsp;the&nbsp;index&nbsp;is&nbsp;out&nbsp;of&nbsp;the&nbsp;current&nbsp;chain's&nbsp;bounds.</tt></dd></dl>
+
+<dl><dt><a name="Miner-get_resolution_block"><strong>get_resolution_block</strong></a>(self, idx)</dt><dd><tt>Get&nbsp;the&nbsp;binary&nbsp;encoded&nbsp;block&nbsp;at&nbsp;the&nbsp;provided&nbsp;index&nbsp;consisting&nbsp;of&nbsp;both&nbsp;its&nbsp;header&nbsp;and&nbsp;binary&nbsp;block<br>
+data&nbsp;to&nbsp;send&nbsp;to&nbsp;a&nbsp;node&nbsp;as&nbsp;a&nbsp;resolution&nbsp;block&nbsp;to&nbsp;help&nbsp;it&nbsp;build&nbsp;the&nbsp;higher&nbsp;cost&nbsp;chain.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;of&nbsp;the&nbsp;block&nbsp;to&nbsp;be&nbsp;encoded&nbsp;and&nbsp;returned.<br>
+:return:&nbsp;The&nbsp;byte&nbsp;string&nbsp;representation&nbsp;of&nbsp;the&nbsp;block&nbsp;at&nbsp;the&nbsp;provided&nbsp;index&nbsp;or&nbsp;None&nbsp;if&nbsp;the&nbsp;provided&nbsp;index<br>
+was&nbsp;out&nbsp;of&nbsp;the&nbsp;current&nbsp;chain's&nbsp;bounds.</tt></dd></dl>
+
+<dl><dt><a name="Miner-get_resolution_block_indices"><strong>get_resolution_block_indices</strong></a>(self, chain)</dt><dd><tt>Gets&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;that&nbsp;only&nbsp;have&nbsp;a&nbsp;head.&nbsp;The&nbsp;blocks&nbsp;at<br>
+these&nbsp;indices&nbsp;are&nbsp;missing&nbsp;the&nbsp;binary&nbsp;data&nbsp;for&nbsp;their&nbsp;body.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;chain&nbsp;to&nbsp;find&nbsp;the&nbsp;indices&nbsp;of&nbsp;resolution&nbsp;blocks<br>
+:return:&nbsp;A&nbsp;list&nbsp;of&nbsp;the&nbsp;indices&nbsp;of&nbsp;blocks&nbsp;that&nbsp;are&nbsp;missing&nbsp;their&nbsp;binary&nbsp;body&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="Miner-get_resolution_chain"><strong>get_resolution_chain</strong></a>(self)</dt><dd><tt>Returns&nbsp;the&nbsp;binary&nbsp;encoded&nbsp;chain&nbsp;without&nbsp;the&nbsp;block&nbsp;bodies&nbsp;that&nbsp;can&nbsp;be&nbsp;used<br>
+to&nbsp;resolve&nbsp;a&nbsp;node&nbsp;with&nbsp;a&nbsp;lower&nbsp;cost&nbsp;chain&nbsp;that&nbsp;needs&nbsp;to&nbsp;catch&nbsp;up.<br>
+:return:&nbsp;The&nbsp;binary&nbsp;encoded&nbsp;resolution&nbsp;chain.</tt></dd></dl>
+
+<dl><dt><a name="Miner-mine"><strong>mine</strong></a>(self)</dt><dd><tt>Starts&nbsp;mining&nbsp;blocks&nbsp;by&nbsp;creating&nbsp;new&nbsp;blocks,&nbsp;searching&nbsp;for&nbsp;valid&nbsp;nonces&nbsp;and&nbsp;adding&nbsp;them&nbsp;to&nbsp;the&nbsp;chain.&nbsp;<br>
+This&nbsp;method&nbsp;never&nbsp;returns.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Miner-receive_block"><strong>receive_block</strong></a>(self, block, chain_cost)</dt><dd><tt>Receive&nbsp;a&nbsp;block&nbsp;that&nbsp;was&nbsp;mined&nbsp;from&nbsp;a&nbsp;peer&nbsp;node&nbsp;in&nbsp;the&nbsp;network.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;that&nbsp;was&nbsp;mined.<br>
+:param&nbsp;chain_cost:&nbsp;The&nbsp;total&nbsp;cost&nbsp;of&nbsp;the&nbsp;chain&nbsp;that&nbsp;the&nbsp;peer&nbsp;node&nbsp;is&nbsp;working&nbsp;on.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Miner-receive_complete_chain"><strong>receive_complete_chain</strong></a>(self, chain)</dt><dd><tt>Receive&nbsp;a&nbsp;chain&nbsp;that&nbsp;has&nbsp;completed&nbsp;chain&nbsp;resolution&nbsp;meaning&nbsp;it&nbsp;is&nbsp;ready&nbsp;to&nbsp;swap&nbsp;out&nbsp;the&nbsp;current&nbsp;chain<br>
+due&nbsp;to&nbsp;having&nbsp;all&nbsp;of&nbsp;its&nbsp;block&nbsp;headers&nbsp;and&nbsp;body&nbsp;data&nbsp;and&nbsp;having&nbsp;a&nbsp;valid&nbsp;hash&nbsp;chain.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;completed&nbsp;chain.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Miner-receive_resolution_block"><strong>receive_resolution_block</strong></a>(self, block, idx, chain)</dt><dd><tt>Receive&nbsp;a&nbsp;resolution&nbsp;block&nbsp;from&nbsp;a&nbsp;peer&nbsp;node&nbsp;in&nbsp;the&nbsp;network&nbsp;to&nbsp;add&nbsp;the&nbsp;binary&nbsp;body&nbsp;data&nbsp;to&nbsp;any<br>
+blocks&nbsp;within&nbsp;the&nbsp;higher&nbsp;cost&nbsp;resolution&nbsp;chain&nbsp;that&nbsp;are&nbsp;missing&nbsp;their&nbsp;binary&nbsp;data.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;who's&nbsp;body&nbsp;data&nbsp;should&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;chain.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;of&nbsp;the&nbsp;block&nbsp;that&nbsp;the&nbsp;block's&nbsp;body&nbsp;should&nbsp;be&nbsp;added&nbsp;to.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;higher&nbsp;cost&nbsp;chain&nbsp;that&nbsp;is&nbsp;undergoing&nbsp;chain&nbsp;resolution.<br>
+:return:&nbsp;True&nbsp;if&nbsp;the&nbsp;block&nbsp;was&nbsp;successfully&nbsp;added&nbsp;to&nbsp;the&nbsp;chain&nbsp;without&nbsp;invalidating<br>
+the&nbsp;chain;&nbsp;otherwise,&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="Miner-receive_resolution_chain"><strong>receive_resolution_chain</strong></a>(self, chain, res_chain)</dt><dd><tt>Handles&nbsp;a&nbsp;resolution&nbsp;chain&nbsp;from&nbsp;a&nbsp;peer&nbsp;node&nbsp;in&nbsp;the&nbsp;network.&nbsp;This&nbsp;is&nbsp;a&nbsp;chain&nbsp;only&nbsp;consisting&nbsp;of&nbsp;block&nbsp;headers<br>
+with&nbsp;no&nbsp;block&nbsp;data&nbsp;that&nbsp;has&nbsp;been&nbsp;discovered&nbsp;to&nbsp;have&nbsp;a&nbsp;higher&nbsp;cost&nbsp;than&nbsp;the&nbsp;chain&nbsp;that&nbsp;is&nbsp;currently&nbsp;being<br>
+mined.&nbsp;This&nbsp;populates&nbsp;the&nbsp;resolution&nbsp;chain&nbsp;with&nbsp;the&nbsp;block&nbsp;body&nbsp;data&nbsp;for&nbsp;any&nbsp;blocks&nbsp;that&nbsp;match&nbsp;the&nbsp;current<br>
+chain&nbsp;to&nbsp;reduce&nbsp;the&nbsp;amount&nbsp;of&nbsp;data&nbsp;that&nbsp;needs&nbsp;to&nbsp;be&nbsp;sent&nbsp;over&nbsp;the&nbsp;network.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;potentially&nbsp;higher&nbsp;cost&nbsp;chain&nbsp;consisting&nbsp;of&nbsp;a&nbsp;single&nbsp;floating&nbsp;block&nbsp;at&nbsp;the&nbsp;head&nbsp;<br>
+missing&nbsp;all&nbsp;block's&nbsp;between&nbsp;the&nbsp;genesis&nbsp;block&nbsp;and&nbsp;the&nbsp;head.<br>
+:param&nbsp;res_chain:&nbsp;The&nbsp;chain&nbsp;used&nbsp;to&nbsp;complete&nbsp;the&nbsp;potentially&nbsp;higher&nbsp;cost&nbsp;chain&nbsp;consisting&nbsp;of&nbsp;the&nbsp;block<br>
+headers&nbsp;for&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain.<br>
+:return:&nbsp;True&nbsp;if&nbsp;combining&nbsp;the&nbsp;two&nbsp;chains&nbsp;resulted&nbsp;in&nbsp;a&nbsp;valid&nbsp;chain;&nbsp;otherwise,&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="Miner-remove_floating_chain"><strong>remove_floating_chain</strong></a>(self, chain)</dt><dd><tt>Remove&nbsp;a&nbsp;floating&nbsp;chain,&nbsp;a&nbsp;chain&nbsp;that&nbsp;is&nbsp;in&nbsp;the&nbsp;process&nbsp;of&nbsp;chain&nbsp;resolution&nbsp;to&nbsp;be&nbsp;swapped&nbsp;out,&nbsp;so&nbsp;that&nbsp;it&nbsp;is&nbsp;<br>
+no&nbsp;longer&nbsp;being&nbsp;tracked&nbsp;by&nbsp;the&nbsp;miner.&nbsp;This&nbsp;should&nbsp;be&nbsp;used&nbsp;if&nbsp;the&nbsp;current&nbsp;chain&nbsp;is&nbsp;now&nbsp;higher&nbsp;cost&nbsp;than<br>
+the&nbsp;floating&nbsp;chain&nbsp;or&nbsp;chain&nbsp;resolution&nbsp;failed.<br>
+:param&nbsp;chain:&nbsp;The&nbsp;floating&nbsp;chain&nbsp;to&nbsp;be&nbsp;removed.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>DIFFICULTY_TARGET</strong> = 15.0</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

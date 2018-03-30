@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module chain</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>chain</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../chain.py">chain.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="util.html">util</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial">
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="chain.html#Chain">Chain</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Chain">class <strong>Chain</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;chain&nbsp;for&nbsp;storing&nbsp;the&nbsp;blocks&nbsp;that&nbsp;make&nbsp;up&nbsp;the&nbsp;block&nbsp;chain&nbsp;and&nbsp;ensuring&nbsp;that&nbsp;no&nbsp;blocks&nbsp;invalidate&nbsp;the&nbsp;chain.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Chain-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Chain-add"><strong>add</strong></a>(self, block)</dt><dd><tt>Add&nbsp;a&nbsp;block&nbsp;to&nbsp;the&nbsp;chain.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;to&nbsp;be&nbsp;added.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Chain-encode"><strong>encode</strong></a>(self, include_body=True)</dt><dd><tt>Encode&nbsp;the&nbsp;chain&nbsp;into&nbsp;a&nbsp;binary&nbsp;representation&nbsp;that&nbsp;can&nbsp;be&nbsp;sent&nbsp;across&nbsp;the&nbsp;network<br>
+:param&nbsp;include_body:&nbsp;Indicate&nbsp;whether&nbsp;to&nbsp;encode&nbsp;the&nbsp;data&nbsp;in&nbsp;the&nbsp;blocks'&nbsp;bodies<br>
+:return:&nbsp;The&nbsp;binary&nbsp;encoded&nbsp;chain.</tt></dd></dl>
+
+<dl><dt><a name="Chain-get_bodiless_indices"><strong>get_bodiless_indices</strong></a>(self)</dt><dd><tt>Gets&nbsp;the&nbsp;list&nbsp;of&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;that&nbsp;only&nbsp;have&nbsp;a&nbsp;header.&nbsp;The&nbsp;blocks&nbsp;at<br>
+these&nbsp;indices&nbsp;are&nbsp;missing&nbsp;the&nbsp;binary&nbsp;data&nbsp;for&nbsp;their&nbsp;body.<br>
+:return:&nbsp;A&nbsp;list&nbsp;of&nbsp;the&nbsp;indices&nbsp;of&nbsp;blocks&nbsp;that&nbsp;are&nbsp;missing&nbsp;their&nbsp;binary&nbsp;body&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="Chain-get_cost"><strong>get_cost</strong></a>(self)</dt><dd><tt>Get&nbsp;the&nbsp;total&nbsp;cost&nbsp;of&nbsp;all&nbsp;the&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain.&nbsp;This&nbsp;can&nbsp;be&nbsp;used&nbsp;to&nbsp;identify&nbsp;how&nbsp;much&nbsp;work&nbsp;has&nbsp;been<br>
+put&nbsp;in&nbsp;to&nbsp;the&nbsp;chain&nbsp;to&nbsp;determine&nbsp;which&nbsp;chain&nbsp;nodes&nbsp;should&nbsp;be&nbsp;working&nbsp;on.<br>
+:return:&nbsp;The&nbsp;cost&nbsp;of&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;combined.</tt></dd></dl>
+
+<dl><dt><a name="Chain-insert"><strong>insert</strong></a>(self, idx, block)</dt><dd><tt>Insert&nbsp;a&nbsp;block&nbsp;into&nbsp;the&nbsp;chain&nbsp;at&nbsp;the&nbsp;specified&nbsp;index.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;to&nbsp;insert&nbsp;the&nbsp;block&nbsp;at.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;to&nbsp;be&nbsp;inserted<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Chain-is_complete"><strong>is_complete</strong></a>(self)</dt><dd><tt>Determine&nbsp;if&nbsp;all&nbsp;blocks&nbsp;in&nbsp;the&nbsp;chain&nbsp;have&nbsp;their&nbsp;binary&nbsp;body&nbsp;data&nbsp;meaning&nbsp;that&nbsp;there&nbsp;are&nbsp;no&nbsp;bodiless&nbsp;blocks.<br>
+:return:&nbsp;True&nbsp;if&nbsp;all&nbsp;blocks&nbsp;have&nbsp;their&nbsp;binary&nbsp;body&nbsp;data;&nbsp;otherwise,&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="Chain-is_valid"><strong>is_valid</strong></a>(self)</dt><dd><tt>Tests&nbsp;whether&nbsp;the&nbsp;chain&nbsp;is&nbsp;valid&nbsp;by&nbsp;computing&nbsp;and&nbsp;verifying&nbsp;the&nbsp;chain&nbsp;of&nbsp;hashes.<br>
+:return:&nbsp;True&nbsp;if&nbsp;the&nbsp;chain&nbsp;is&nbsp;valid;&nbsp;otherwise,&nbsp;False</tt></dd></dl>
+
+<dl><dt><a name="Chain-next"><strong>next</strong></a>(self, difficulty, blobs)</dt><dd><tt>Build&nbsp;the&nbsp;next&nbsp;block&nbsp;to&nbsp;try&nbsp;to&nbsp;add&nbsp;to&nbsp;the&nbsp;chain.<br>
+:param&nbsp;difficulty:&nbsp;The&nbsp;difficulty&nbsp;required&nbsp;for&nbsp;the&nbsp;next&nbsp;block&nbsp;to&nbsp;be&nbsp;mined.<br>
+:param&nbsp;blobs:&nbsp;The&nbsp;blobs&nbsp;to&nbsp;be&nbsp;added&nbsp;to&nbsp;the&nbsp;body&nbsp;of&nbsp;the&nbsp;next&nbsp;block.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Chain-replace"><strong>replace</strong></a>(self, idx, block)</dt><dd><tt>Replace&nbsp;the&nbsp;block&nbsp;at&nbsp;the&nbsp;provided&nbsp;index&nbsp;with&nbsp;the&nbsp;provided&nbsp;block.&nbsp;This&nbsp;will&nbsp;only&nbsp;update&nbsp;the&nbsp;body&nbsp;of&nbsp;the&nbsp;the<br>
+block&nbsp;at&nbsp;the&nbsp;provided&nbsp;index&nbsp;rather&nbsp;than&nbsp;replacing&nbsp;it&nbsp;because&nbsp;the&nbsp;provided&nbsp;block&nbsp;must&nbsp;have&nbsp;the&nbsp;same&nbsp;header<br>
+to&nbsp;avoid&nbsp;invalidating&nbsp;the&nbsp;chain.&nbsp;This&nbsp;is&nbsp;used&nbsp;during&nbsp;chain&nbsp;resolution&nbsp;to&nbsp;add&nbsp;block&nbsp;binary&nbsp;data&nbsp;for&nbsp;blocks<br>
+that&nbsp;are&nbsp;missing&nbsp;it.<br>
+:param&nbsp;idx:&nbsp;The&nbsp;index&nbsp;of&nbsp;the&nbsp;block&nbsp;to&nbsp;have&nbsp;its&nbsp;body&nbsp;replaced.<br>
+:param&nbsp;block:&nbsp;The&nbsp;block&nbsp;who's&nbsp;body&nbsp;should&nbsp;be&nbsp;used&nbsp;to&nbsp;replace&nbsp;it.<br>
+:return:&nbsp;True&nbsp;if&nbsp;the&nbsp;block's&nbsp;body&nbsp;was&nbsp;replaced&nbsp;with&nbsp;the&nbsp;provided&nbsp;block;&nbsp;otherwise,&nbsp;False.</tt></dd></dl>
+
+<hr>
+Class methods defined here:<br>
+<dl><dt><a name="Chain-decode"><strong>decode</strong></a>(data, has_bodies)<font color="#909090"><font face="helvetica, arial"> from </font></font></dt><dd><tt>Decode&nbsp;a&nbsp;chain&nbsp;from&nbsp;an&nbsp;encoded&nbsp;<a href="#Chain">Chain</a>&nbsp;protocol&nbsp;buffer.<br>
+:param&nbsp;data:&nbsp;The&nbsp;encoded&nbsp;chain.<br>
+:param&nbsp;has_bodies:&nbsp;True&nbsp;if&nbsp;the&nbsp;encoded&nbsp;chain's&nbsp;blocks&nbsp;have&nbsp;their&nbsp;body&nbsp;data;&nbsp;otherwise,&nbsp;False.<br>
+:return:&nbsp;The&nbsp;decoded&nbsp;chain.<br>
+:except:&nbsp;If&nbsp;decoding&nbsp;fails&nbsp;then&nbsp;a&nbsp;DecodeError&nbsp;is&nbsp;thrown.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

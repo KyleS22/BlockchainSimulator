@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module framing</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>framing</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../framing.py">framing.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;length&nbsp;of&nbsp;the&nbsp;integer&nbsp;header&nbsp;used&nbsp;to&nbsp;frame&nbsp;TCP&nbsp;messages&nbsp;in&nbsp;a&nbsp;TCP&nbsp;stream.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-convert_int_from_4_bytes"><strong>convert_int_from_4_bytes</strong></a>(bytes)</dt><dd><tt>Convert&nbsp;a&nbsp;4&nbsp;byte&nbsp;byte&nbsp;string&nbsp;into&nbsp;an&nbsp;integer.<br>
+:param&nbsp;bytes:&nbsp;The&nbsp;4&nbsp;byte&nbsp;byte&nbsp;string&nbsp;to&nbsp;convert.<br>
+:return:&nbsp;The&nbsp;integer&nbsp;representation&nbsp;of&nbsp;bytes.</tt></dd></dl>
+ <dl><dt><a name="-convert_int_to_4_bytes"><strong>convert_int_to_4_bytes</strong></a>(num)</dt><dd><tt>Convert&nbsp;the&nbsp;given&nbsp;integer&nbsp;into&nbsp;a&nbsp;byte&nbsp;string&nbsp;representation.<br>
+:param&nbsp;num:&nbsp;The&nbsp;number&nbsp;to&nbsp;convert.<br>
+:return:&nbsp;The&nbsp;byte&nbsp;string&nbsp;representation&nbsp;of&nbsp;num.</tt></dd></dl>
+ <dl><dt><a name="-frame_segment"><strong>frame_segment</strong></a>(data)</dt><dd><tt>Adds&nbsp;length&nbsp;framing&nbsp;to&nbsp;a&nbsp;binary&nbsp;message&nbsp;to&nbsp;allow&nbsp;the&nbsp;message&nbsp;to&nbsp;be&nbsp;sent&nbsp;in&nbsp;a&nbsp;TCP&nbsp;stream&nbsp;and&nbsp;pieced&nbsp;back&nbsp;together&nbsp;<br>
+from&nbsp;multiple&nbsp;TCP&nbsp;segments.<br>
+:param&nbsp;data:&nbsp;The&nbsp;data&nbsp;to&nbsp;have&nbsp;length&nbsp;framing&nbsp;appended.<br>
+:return:&nbsp;A&nbsp;framed&nbsp;byte&nbsp;string&nbsp;that&nbsp;can&nbsp;be&nbsp;sent.</tt></dd></dl>
+ <dl><dt><a name="-receive_framed_segment"><strong>receive_framed_segment</strong></a>(sock)</dt><dd><tt>Receive&nbsp;a&nbsp;length&nbsp;framed&nbsp;segment&nbsp;from&nbsp;the&nbsp;TCP&nbsp;stream&nbsp;on&nbsp;the&nbsp;provided&nbsp;socket.<br>
+:param&nbsp;sock:&nbsp;The&nbsp;already&nbsp;connected&nbsp;TCP&nbsp;stream&nbsp;socket&nbsp;to&nbsp;receive&nbsp;a&nbsp;framed&nbsp;message&nbsp;on.<br>
+:return:&nbsp;The&nbsp;framed&nbsp;segment's&nbsp;binary&nbsp;data&nbsp;or&nbsp;an&nbsp;empty&nbsp;byte&nbsp;string&nbsp;if&nbsp;the&nbsp;socket&nbsp;was&nbsp;closed&nbsp;between&nbsp;framed&nbsp;segments.<br>
+:except:&nbsp;A&nbsp;RuntimeError&nbsp;is&nbsp;thrown&nbsp;if&nbsp;the&nbsp;socket&nbsp;connection&nbsp;is&nbsp;broken&nbsp;while&nbsp;in&nbsp;the&nbsp;process&nbsp;of&nbsp;<br>
+receiving&nbsp;a&nbsp;framed&nbsp;message.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>LENGTH_HEADER_SIZE</strong> = 4</td></tr></table>
+</body></html>

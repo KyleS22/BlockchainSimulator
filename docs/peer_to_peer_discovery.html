@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module peer_to_peer_discovery</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>peer_to_peer_discovery</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../peer_to_peer_discovery.py">peer_to_peer_discovery.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/socket.html">socket</a><br>
+<a href="https://docs.python.org/3/library/threading.html">threading</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/time.html">time</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial">
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="peer_to_peer_discovery.html#Heartbeat">Heartbeat</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Heartbeat">class <strong>Heartbeat</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;heartbeat&nbsp;server&nbsp;to&nbsp;broadcast&nbsp;to&nbsp;all&nbsp;nodes&nbsp;in&nbsp;the&nbsp;peer&nbsp;to&nbsp;peer&nbsp;network&nbsp;to<br>
+communicate&nbsp;that&nbsp;the&nbsp;node&nbsp;is&nbsp;still&nbsp;alive&nbsp;and&nbsp;part&nbsp;of&nbsp;the&nbsp;network.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Heartbeat-__init__"><strong>__init__</strong></a>(self, port, heartbeat, node_id)</dt><dd><tt>:param&nbsp;port:&nbsp;The&nbsp;port&nbsp;to&nbsp;transmit&nbsp;heartbeats&nbsp;on.<br>
+:param&nbsp;heartbeat:&nbsp;The&nbsp;interval&nbsp;between&nbsp;heartbeats.<br>
+:param&nbsp;node_id:&nbsp;The&nbsp;unique&nbsp;identifier&nbsp;for&nbsp;the&nbsp;current&nbsp;node&nbsp;that&nbsp;the&nbsp;heartbeat&nbsp;contains.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Heartbeat-broadcast_thread"><strong>broadcast_thread</strong></a>(self)</dt><dd><tt>The&nbsp;thread&nbsp;that&nbsp;broadcasts&nbsp;the&nbsp;heartbeat&nbsp;to&nbsp;all&nbsp;peers&nbsp;in&nbsp;the&nbsp;network.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="Heartbeat-start"><strong>start</strong></a>(self)</dt><dd><tt>Starts&nbsp;the&nbsp;heartbeat&nbsp;thread.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

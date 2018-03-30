@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module requests</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>requests</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="requests.py">requests.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="https://developers.google.com/protocol-buffers/l">google.protobuf.message</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="requests.html#RequestRouter">RequestRouter</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RequestRouter">class <strong>RequestRouter</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;request&nbsp;router&nbsp;to&nbsp;router&nbsp;messages&nbsp;consisting&nbsp;of&nbsp;encoded&nbsp;Request&nbsp;protocol&nbsp;buffers.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="RequestRouter-__init__"><strong>__init__</strong></a>(self, handler)</dt><dd><tt>:param&nbsp;handler:&nbsp;The&nbsp;request&nbsp;handlers&nbsp;consisting&nbsp;of&nbsp;a&nbsp;dictionary&nbsp;mapping&nbsp;the&nbsp;RequestType&nbsp;to&nbsp;the&nbsp;<br>
+handler&nbsp;function&nbsp;to&nbsp;allow&nbsp;the&nbsp;router&nbsp;to&nbsp;determine&nbsp;which&nbsp;function&nbsp;to&nbsp;call&nbsp;when&nbsp;a&nbsp;message&nbsp;is<br>
+received.</tt></dd></dl>
+
+<dl><dt><a name="RequestRouter-route"><strong>route</strong></a>(self, data, handler)</dt><dd><tt>Parse&nbsp;the&nbsp;message&nbsp;and&nbsp;route&nbsp;its&nbsp;data&nbsp;to&nbsp;its&nbsp;corresponding&nbsp;handler.<br>
+:param&nbsp;data:&nbsp;The&nbsp;message&nbsp;data&nbsp;as&nbsp;an&nbsp;encoded&nbsp;Request&nbsp;protocol&nbsp;buffer&nbsp;containing&nbsp;the&nbsp;routing&nbsp;<br>
+information&nbsp;and&nbsp;message&nbsp;body.<br>
+:param&nbsp;handler:&nbsp;The&nbsp;TCP&nbsp;or&nbsp;UDP&nbsp;handler&nbsp;that&nbsp;received&nbsp;the&nbsp;message&nbsp;to&nbsp;be&nbsp;routed.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

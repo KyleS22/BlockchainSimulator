@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module node_pool</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>node_pool</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href="index.html">index</a><br><a href="../node_pool.py">node_pool.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="https://docs.python.org/3/library/logging.html">logging</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/socket.html">socket</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/threading.html">threading</a><br>
+</td><td width="25%" valign=top><a href="https://docs.python.org/3/library/time.html">time</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial">
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="node_pool.html#NodePool">NodePool</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="NodePool">class <strong>NodePool</strong></a></font></td></tr>
+
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;node&nbsp;pool&nbsp;used&nbsp;to&nbsp;keep&nbsp;track&nbsp;of&nbsp;and&nbsp;send&nbsp;messages&nbsp;to&nbsp;other&nbsp;peers&nbsp;in&nbsp;the&nbsp;network&nbsp;using&nbsp;a&nbsp;soft&nbsp;state<br>
+approach&nbsp;to&nbsp;track&nbsp;nodes&nbsp;that&nbsp;are&nbsp;alive.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="NodePool-__init__"><strong>__init__</strong></a>(self, node_id, cleanup_interval, timeout)</dt><dd><tt>Create&nbsp;a&nbsp;new&nbsp;node&nbsp;pool&nbsp;for&nbsp;tracking&nbsp;other&nbsp;nodes&nbsp;in&nbsp;the&nbsp;network.<br>
+:param:&nbsp;node_id:&nbsp;The&nbsp;unique&nbsp;identifier&nbsp;used&nbsp;to&nbsp;identify&nbsp;the&nbsp;current&nbsp;node.<br>
+:param&nbsp;cleanup_interval:&nbsp;How&nbsp;often&nbsp;to&nbsp;check&nbsp;for&nbsp;dead&nbsp;nodes&nbsp;to&nbsp;cleanup.<br>
+:param&nbsp;timeout:&nbsp;The&nbsp;amount&nbsp;of&nbsp;time&nbsp;between&nbsp;broadcasts&nbsp;before&nbsp;a&nbsp;node&nbsp;is&nbsp;declared&nbsp;dead.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="NodePool-add"><strong>add</strong></a>(self, node_id, node_address)</dt><dd><tt>Add&nbsp;a&nbsp;new&nbsp;peer&nbsp;node&nbsp;to&nbsp;the&nbsp;node&nbsp;pool.<br>
+:param&nbsp;node_id:&nbsp;The&nbsp;unique&nbsp;identifier&nbsp;of&nbsp;the&nbsp;node&nbsp;to&nbsp;be&nbsp;added.<br>
+:param&nbsp;node_address:&nbsp;The&nbsp;address&nbsp;to&nbsp;communicate&nbsp;with&nbsp;the&nbsp;node.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="NodePool-cleanup"><strong>cleanup</strong></a>(self)</dt><dd><tt>Cleanup&nbsp;the&nbsp;node&nbsp;pool&nbsp;using&nbsp;a&nbsp;soft&nbsp;state&nbsp;approach&nbsp;to&nbsp;remove&nbsp;all&nbsp;nodes&nbsp;that&nbsp;for&nbsp;which&nbsp;a&nbsp;discovery&nbsp;message<br>
+has&nbsp;not&nbsp;been&nbsp;received&nbsp;for&nbsp;longer&nbsp;than&nbsp;the&nbsp;node&nbsp;pool's&nbsp;timeout&nbsp;period.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="NodePool-multicast"><strong>multicast</strong></a>(self, data, port)</dt><dd><tt>Psuedo-UDP&nbsp;multi-casting&nbsp;by&nbsp;sending&nbsp;the&nbsp;provided&nbsp;data&nbsp;to&nbsp;all&nbsp;known&nbsp;peers&nbsp;in&nbsp;the&nbsp;pool<br>
+on&nbsp;the&nbsp;provided&nbsp;port.&nbsp;True&nbsp;multi-casting&nbsp;cannot&nbsp;be&nbsp;used&nbsp;due&nbsp;to&nbsp;lack&nbsp;of&nbsp;Docker&nbsp;support.<br>
+:param&nbsp;data:&nbsp;The&nbsp;data&nbsp;to&nbsp;be&nbsp;sent&nbsp;to&nbsp;all&nbsp;known&nbsp;peers&nbsp;in&nbsp;the&nbsp;pool.<br>
+:param&nbsp;port:&nbsp;The&nbsp;port&nbsp;to&nbsp;send&nbsp;the&nbsp;data&nbsp;to&nbsp;on&nbsp;the&nbsp;peers.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="NodePool-start"><strong>start</strong></a>(self)</dt><dd><tt>Start&nbsp;the&nbsp;cleanup&nbsp;thread&nbsp;to&nbsp;periodically&nbsp;check&nbsp;for&nbsp;nodes&nbsp;that&nbsp;should&nbsp;be&nbsp;removed&nbsp;from&nbsp;the&nbsp;pool&nbsp;due<br>
+to&nbsp;not&nbsp;receiving&nbsp;any&nbsp;discovery&nbsp;messages&nbsp;from&nbsp;them.<br>
+:return:&nbsp;None</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

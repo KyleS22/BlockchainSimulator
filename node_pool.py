@@ -19,8 +19,9 @@ class NodePool:
         :return: None
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        for node in self.pool.keys():
-            sock.sendto(data, (node[1], port))
+        with self.pool_lock:
+            for node in self.pool.keys():
+                sock.sendto(data, (node[1], port))
 
     def __init__(self, node_id, cleanup_interval, timeout):
         """
